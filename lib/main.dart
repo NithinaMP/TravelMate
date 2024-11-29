@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:travelmate/admin/addDestinationDetails.dart';
 import 'package:travelmate/admin/addEventDetailsScreen.dart';
 import 'package:travelmate/admin/addEventScreen.dart';
+import 'package:travelmate/provider/loginProvider.dart';
 import 'package:travelmate/provider/mainProvider.dart';
 import 'package:travelmate/user/EventDetail.dart';
 import 'package:travelmate/user/bookEvent.dart';
@@ -19,6 +20,8 @@ import 'package:travelmate/user/splashScreen.dart';
 import 'package:travelmate/user/wishListScreen.dart';
 
 import 'admin/adminHomescreen.dart';
+import 'admin/sample.dart';
+import 'admin/sample1.dart';
 
 Future <void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,18 +45,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => MainProvider(),)
+        ChangeNotifierProvider(create: (context) => MainProvider(),),
+        ChangeNotifierProvider(create: (context) => LoginProvider(),)
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'TravelMate',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
         // home: MyTicketScreen(),
-        //  home: SplashScreen(),
-         home: adminhomeWidget(),
+         home: SplashScreen(),
+        //  home: adminhomeWidget(),
+        //  home: SwitchInRowExample(),
 
       ),
     );

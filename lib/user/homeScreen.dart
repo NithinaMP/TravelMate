@@ -758,65 +758,65 @@ class _UserHomePageState extends State<UserHomePage> {
             ),
           ),
         ),
-    bottomNavigationBar: Container(
-            height: 65,
-            width: 350,
-            color: Colors.black,
-
-            child:Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 70,top: 10),
-                  child: InkWell(onTap:  () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => UserHomePage(),));
-                  },
-                    child: Column(
-                      children: [
-                        Icon(Icons.home,color:Colors.yellow,),
-                        Text("Home",style: TextStyle(
-                            color: Colors.white,fontFamily: "allerta"
-                        ),),
-                      ],
-                    ),
-                  ),
-                ),
-
-                InkWell(onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => WishlistScreen(),));
-                },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right:80,top: 10),
-                    child: Column(
-                      children: [
-                        // Image.asset("assets/icons/like.png",scale: 7,color:  Colors.red,),
-                        Icon(Icons.favorite,color: Colors.white,),
-                        Text("Wish",style: TextStyle(
-                            color:  Colors.white,fontFamily: "allerta"
-                        ),),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top:10),
-                  child: InkWell(onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileScreen(),));
-                  },
-                    child: Column(
-                      children: [
-                        Icon(Icons.person,color:  Colors.white,),
-                        Text("Account",style: TextStyle(
-                            color:  Colors.white,fontFamily: "allerta"
-                        ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-              ],
-            )
-        ),
+    // bottomNavigationBar: Container(
+    //         height: 65,
+    //         width: 350,
+    //         color: Colors.black,
+    //
+    //         child:Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //           children: [
+    //             Padding(
+    //               padding: const EdgeInsets.only(right: 70,top: 10),
+    //               child: InkWell(onTap:  () {
+    //                 Navigator.push(context, MaterialPageRoute(builder: (context) => UserHomePage(),));
+    //               },
+    //                 child: Column(
+    //                   children: [
+    //                     Icon(Icons.home,color:Colors.yellow,),
+    //                     Text("Home",style: TextStyle(
+    //                         color: Colors.white,fontFamily: "allerta"
+    //                     ),),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //
+    //             InkWell(onTap: () {
+    //               Navigator.push(context, MaterialPageRoute(builder: (context) => WishlistScreen(),));
+    //             },
+    //               child: Padding(
+    //                 padding: const EdgeInsets.only(right:80,top: 10),
+    //                 child: Column(
+    //                   children: [
+    //                     // Image.asset("assets/icons/like.png",scale: 7,color:  Colors.red,),
+    //                     Icon(Icons.favorite,color: Colors.white,),
+    //                     Text("Wish",style: TextStyle(
+    //                         color:  Colors.white,fontFamily: "allerta"
+    //                     ),),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //             Padding(
+    //               padding: const EdgeInsets.only(top:10),
+    //               child: InkWell(onTap: () {
+    //                 Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileScreen(),));
+    //               },
+    //                 child: Column(
+    //                   children: [
+    //                     Icon(Icons.person,color:  Colors.white,),
+    //                     Text("Account",style: TextStyle(
+    //                         color:  Colors.white,fontFamily: "allerta"
+    //                     ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //
+    //           ],
+    //         )
+    //     ),
       ),
     );
   }
