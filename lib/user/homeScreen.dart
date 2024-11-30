@@ -422,21 +422,21 @@ class _UserHomePageState extends State<UserHomePage> {
     List<Map<String, String>> destinations = [
       {
         "image": "assets/image/travel3.jpg",
-        "name": "Travel Destination 1",
-        "location": "Location 1"
+        "name": "Malambuzha Dam",
+        "location": "Malampuzha,Palakkad,Kerala"
       },
       {
-        "image": "assets/jadayupara.jpeg",
+        "image": "assets/image/jatayu.jpg",
         "name": "Jadayupara",
         "location": "Kollam, Kerala"
       },
       {
-        "image": "assets/image/ooty.jpeg",
+        "image": "assets/image/ranipuram-ksr.jpg",
         "name": "Ooty",
         "location": "Tamil Nadu"
       },
       {
-        "image": "assets/image/varkala.jpeg",
+        "image": "assets/image/munnar.jpeg",
         "name": "Varkala",
         "location": "Kerala"
       },
@@ -609,34 +609,41 @@ class _UserHomePageState extends State<UserHomePage> {
                       Container(
                         height: height / 15,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.orange, Colors.red],
-                          ),
+                          gradient: admingradient,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: TextFormField(
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "muktaregular",
-                          ),
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: TextFormField(
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "didact",
                             ),
-                            hintText: "Search here",
-                            hintStyle: TextStyle(color: Colors.white),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(20),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              icon: Icon(Icons.search_outlined,size: 30,color: Colors.grey,),
+                              hintText: "Find out where you want to go!",
+                              hintStyle: TextStyle(color: Colors.grey),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
                             ),
                           ),
                         ),
                       ),
                       SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0,bottom: 10.0),
+                        child: Text("Upcoming Events",
+                          style: TextStyle(fontSize: 20,fontFamily: "bakbak",color: Colors.white),),
+                      ),
 
                       CarouselSlider.builder(
                         itemCount: images.length,
@@ -657,7 +664,7 @@ class _UserHomePageState extends State<UserHomePage> {
                         },
                         options: CarouselOptions(
                           clipBehavior: Clip.antiAliasWithSaveLayer,
-                          height: MediaQuery.of(context).size.height / 2.5,
+                          height: MediaQuery.of(context).size.height / 2.75,
                           viewportFraction: 1,
                           autoPlay: true,
                           pageSnapping: true,
@@ -706,10 +713,10 @@ class _UserHomePageState extends State<UserHomePage> {
                               child: Column(
                                 children: [
                                   Container(
-                                    height: height / 3.75,
+                                    height: height / 4.5,
                                     width: width,
                                     decoration: BoxDecoration(
-                                      color: Colors.red,
+                                      color: Colors.black,
                                       borderRadius: BorderRadius.circular(20),
                                       image: DecorationImage(
                                         image: AssetImage(destinations[index]["image"]!),
@@ -717,7 +724,7 @@ class _UserHomePageState extends State<UserHomePage> {
                                       ),
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.only(left: 15.0),
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -728,17 +735,16 @@ class _UserHomePageState extends State<UserHomePage> {
                                           Text(
                                             destinations[index]["name"]!,
                                             style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,fontFamily: "playfair",
                                               fontSize: 20,
                                             ),
                                           ),
                                           Text(
                                             destinations[index]["location"]!,
                                             style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15,
+                                              color: Colors.white,
+                                              fontFamily: "benne",
+                                              fontSize: 14,
                                             ),
                                           ),
                                         ],
@@ -772,10 +778,11 @@ class _UserHomePageState extends State<UserHomePage> {
                   },
                     child: Column(
                       children: [
-                        Icon(Icons.home,color:Colors.yellow,),
-                        Text("Home",style: TextStyle(
-                            color: Colors.white,fontFamily: "allerta"
-                        ),),
+                        Icon(Icons.home,color:Colors.white,size: 30,),
+                        // Text("Home",style: TextStyle(
+                        //     color: Colors.white,fontFamily: "allerta"
+                        // ),
+                // ),
                       ],
                     ),
                   ),
@@ -789,10 +796,10 @@ class _UserHomePageState extends State<UserHomePage> {
                     child: Column(
                       children: [
                         // Image.asset("assets/icons/like.png",scale: 7,color:  Colors.red,),
-                        Icon(Icons.favorite,color: Colors.white,),
-                        Text("Wish",style: TextStyle(
-                            color:  Colors.white,fontFamily: "allerta"
-                        ),),
+                        Icon(Icons.favorite_sharp,color: Colors.white,size: 30,),
+                        // Text("Wish",style: TextStyle(
+                        //     color:  Colors.white,fontFamily: "allerta"
+                        // ),),
                       ],
                     ),
                   ),
@@ -804,11 +811,11 @@ class _UserHomePageState extends State<UserHomePage> {
                   },
                     child: Column(
                       children: [
-                        Icon(Icons.person,color:  Colors.white,),
-                        Text("Account",style: TextStyle(
-                            color:  Colors.white,fontFamily: "allerta"
-                        ),
-                        ),
+                        Icon(Icons.person_2_outlined,color:  Colors.white,size: 30,),
+                        // Text("Account",style: TextStyle(
+                        //     color:  Colors.white,fontFamily: "allerta"
+                        // ),
+                        // ),
                       ],
                     ),
                   ),

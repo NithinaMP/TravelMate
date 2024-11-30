@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         ),
         // home: MyTicketScreen(),
         //  home: SplashScreen(),
-         home: adminhomeWidget(),
+         home: UserHomePage(),
 
       ),
     );
