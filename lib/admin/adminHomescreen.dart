@@ -226,7 +226,7 @@ class adminhomeWidget extends StatelessWidget {
                               title: Text("Sign Out",style: TextStyle(fontFamily: "benne",fontSize: 18,color: Colors.white),),
                               trailing: Icon(Icons.arrow_forward_ios_sharp,size: 20,color: Colors.white,),
                               onTap: () {
-                                // val.logOutAlert(context);
+                                val.logOutAlert(context);
                               },
                             );
                           }
