@@ -387,6 +387,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:travelmate/user/profileScreen.dart';
+import 'package:travelmate/user/profileView.dart';
 import 'package:travelmate/user/wishListScreen.dart';
 
 import '../constants/constant_colors.dart';
@@ -739,13 +740,18 @@ class _UserHomePageState extends State<UserHomePage> {
                                               fontSize: 20,
                                             ),
                                           ),
-                                          Text(
-                                            destinations[index]["location"]!,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: "benne",
-                                              fontSize: 14,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.place_outlined,color: Colors.white,size: 20,),
+                                              Text(
+                                                destinations[index]["location"]!,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "benne",
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -807,7 +813,7 @@ class _UserHomePageState extends State<UserHomePage> {
                 Padding(
                   padding: const EdgeInsets.only(top:10),
                   child: InkWell(onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileScreen(),));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileviewWIdget(),));
                   },
                     child: Column(
                       children: [

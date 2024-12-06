@@ -21,13 +21,13 @@ class WishlistScreen extends StatelessWidget {
         backgroundColor: Colors.black,
         appBar: AppBar(
           title: Text("Wishlist",
-            style: TextStyle(fontFamily: "benne",fontSize: 32,color: Colors.white),),
+            style: TextStyle(fontFamily: "bakbak",fontSize: 28,color: Colors.white),),
           leading: Icon(Icons.arrow_back_ios_new_rounded,color: Colors.white,size: 40,),
           backgroundColor: Colors.black,
         ),
         body: SingleChildScrollView(
           child: Column(
-              children: [
+              children: [SizedBox(height: 30,),
                 // ListView.builder(
                 //     itemCount: images.length,
                 //     physics: ScrollPhysics(),
@@ -62,27 +62,46 @@ class WishlistScreen extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 12,
-              mainAxisExtent: 200,
+              mainAxisSpacing: 2,
+              crossAxisSpacing: 7,
+              mainAxisExtent: 230,
             ),
             itemBuilder: (context, index) {
 
-              return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    image: DecorationImage(
-                      image: AssetImage(images[index]),
-                      fit: BoxFit.fill,
+              return Center(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                  Container(
+                    height: 160,width: 190,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      image: DecorationImage(
+                        image: AssetImage(images[index]),
+                        fit: BoxFit.fill,
+                      ),
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    borderRadius: BorderRadius.circular(15),
+                  ),SizedBox(height: 5,),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Row(
+                      children: [
+                        Text("Malampuzha", style: TextStyle(color: Colors.white, fontSize: 19, fontFamily: "benne")),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 18,top: 5),
+                          child: Container(
+                            height: 35,width: 60,decoration: BoxDecoration(border: Border.all(color: Colors.brown),
+                            borderRadius: BorderRadius.circular(10),),
+                            child: Center(child: Text("&150",style: TextStyle(color: Colors.white),)),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Text("malampuzha", style: TextStyle(color: Colors.white, fontSize: 15, fontFamily: "philosopher")),
-                Text("20", style: TextStyle(color: Colors.white, fontSize: 10, fontFamily: "bakbak")),
-              ]);
+
+                  Text("Palakkad,ghgfhguj,ggfghgjhku,Kerala", style: TextStyle(color: Colors.white, fontSize: 10, fontFamily: "didact")),
+                ]),
+              );
             },
           )
               ]
