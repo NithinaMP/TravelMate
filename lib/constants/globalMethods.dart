@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/provider/mainProvider.dart';
 
+import '../user/paymentSuccessfull.dart';
+
 void showSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
@@ -58,3 +60,34 @@ void showDeleteConfirmation(BuildContext context,String id,String from){
       },
   );
 }
+
+void showPaymentConfirmation(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirm Payment"),
+        content: Text("Are you sure you want to make this payment?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the alert dialog
+            },
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the alert dialog
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PaymentSuccess()),
+              );
+            },
+            child: Text("Pay"),
+          ),
+        ],
+      );
+    },
+  );
+}
+

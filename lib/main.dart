@@ -15,6 +15,7 @@ import 'package:travelmate/user/homeScreen.dart';
 import 'package:travelmate/user/loginScreen.dart';
 import 'package:travelmate/user/myTicketScreen.dart';
 import 'package:travelmate/user/review.dart';
+import 'package:travelmate/user/sample.dart';
 import 'package:travelmate/user/signupScreen.dart';
 import 'package:travelmate/user/splashScreen.dart';
 import 'package:travelmate/user/wishListScreen.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
         // home: MyTicketScreen(),
          home: SplashScreen(),
         //  home: adminhomeWidget(),
-        //  home: SwitchInRowExample(),
+        //  home: InfiniteNumberSelector(),
 
       ),
     );

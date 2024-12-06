@@ -3,6 +3,7 @@ class DestinationModel{
   String destName;
   String destPlace;
   String destDistrict;
+  String destBestTime;
   String destImage;
   String destDescription;
   String destEntryFee;
@@ -13,6 +14,7 @@ class DestinationModel{
       this.destName,
       this.destPlace,
       this.destDistrict,
+      this.destBestTime,
       this.destImage,
       this.destDescription,
       this.destEntryFee,

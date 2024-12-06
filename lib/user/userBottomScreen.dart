@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:travelmate/provider/mainProvider.dart';
 import 'package:travelmate/user/profileScreen.dart';
 import 'package:travelmate/user/wishListScreen.dart';
 
@@ -19,7 +21,13 @@ class _UserBottomScreenState extends State<UserBottomScreen> {
 
   List<Widget> getScreens(){
     return [
-      UserHomePage(),
+      Consumer<MainProvider>(
+        builder: (context,value,child) {
+          value.getDestination();
+          value.getEvent();
+          return UserHomePage();
+        }
+      ),
       WishlistScreen(),
       ProfileScreen()
     ];
@@ -41,7 +49,7 @@ class _UserBottomScreenState extends State<UserBottomScreen> {
               label: "Home"
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite_border),
+                icon: Icon(Icons.favorite_rounded),
               label: "Wish"
             ),
             BottomNavigationBarItem(

@@ -5,10 +5,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelmate/admin/adminHomescreen.dart';
 import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/constants/globalMethods.dart';
+import 'package:travelmate/provider/mainProvider.dart';
 
 import '../user/homeScreen.dart';
 import '../user/userBottomScreen.dart';
@@ -57,9 +59,11 @@ class LoginProvider extends ChangeNotifier{
   String loginPassword="";
   String loginConfirmPassword="";
   String loginId="";
+  String loginType="";
 
 
   Future<void> userAuthorized(BuildContext context, String? lgPhone, String? lgPassword) async {
+    MainProvider mpro = Provider.of<MainProvider>(context, listen: false);
     print("Starting login process");
     try {
       print("Firestore with Phone: $lgPhone and Password: $lgPassword");
@@ -78,12 +82,17 @@ class LoginProvider extends ChangeNotifier{
           loginId = map["REG_ID"] ?? "";
           loginName = map["NAME"] ?? "";
           loginPassword = map["PASSWORD"] ?? "";
+          loginType=map["TYPE"]??"";
+          loginPhone=map["PHONE_NUMBER"]??"";
+          print("jjjjj${loginPhone}");
 
           if (map["TYPE"].toString() == "ADMIN") {
             callNextReplacement(context, adminhomeWidget());
             print("Navigate to admin screen");
           } else if (map["TYPE"].toString() == "USER") {
             print("Navigate to user side");
+            mpro.getDestination();
+            mpro.getDestination();
             callNextReplacement(context, UserBottomScreen());
           } else {
             print("Invalid user type");

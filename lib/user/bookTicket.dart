@@ -15,7 +15,7 @@ class BookticketWidget extends StatelessWidget {
       appBar: AppBar(
         leading: InkWell(
             onTap: () {
-              back(context,DestinationScreen(imagePath: '', destinationName: '', location: '',));
+              finish(context);
             },
             child: Icon(Icons.arrow_back_ios_new_sharp,color: Colors.white,size: 32,)),
         backgroundColor: Colors.black,

@@ -108,6 +108,28 @@ class AddDestinationScreen extends StatelessWidget {
                       ),
                     ),
                     Padding(
+                      padding: const EdgeInsets.only(top: 10,),
+                      child: TextField(
+                        controller: value.destBestTimeController,
+                        style: TextStyle(color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: "benne",
+                        ),
+                        cursorColor: Colors.brown,
+                        decoration: InputDecoration(
+                            label: Text("Best time to visit", style: TextStyle(
+                                fontFamily: "baloo",
+                                fontSize: 18,
+                                color: Colors.white),),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.brown),
+                                borderRadius: BorderRadius.circular(30)
+                            )
+
+                        ),
+                      ),
+                    ),
+                    Padding(
                       padding: const EdgeInsets.only(
                           left: 10, top: 30, right: 10),
                       child: Row(

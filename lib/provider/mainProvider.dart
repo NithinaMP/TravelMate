@@ -27,6 +27,7 @@ class MainProvider extends ChangeNotifier {
   TextEditingController destDistrictController=TextEditingController();
   TextEditingController destDiscriptionController=TextEditingController();
   TextEditingController destEntryFeeController=TextEditingController();
+  TextEditingController destBestTimeController=TextEditingController();
 
 
   Future getDestImggallery() async {
@@ -111,6 +112,7 @@ class MainProvider extends ChangeNotifier {
     addDest["DEST_PLACE"]=destPlaceController.text;
     addDest["DEST_DISTRICT"]=destDistrictController.text;
     addDest["DEST_DISCRIPTION"]=destDiscriptionController.text;
+    addDest["DEST_BEST_TIME"]=destBestTimeController.text;
     addDest["DEST_SLOT_AVAILABILITY"]=_isSwitched?"Available":"Not Available";
     addDest["DEST_ENTRY_FEE"]=destEntryFeeController.text;
 
@@ -164,6 +166,7 @@ class MainProvider extends ChangeNotifier {
     destNameController.clear();
     destPlaceController.clear();
     destDistrictController.clear();
+    destBestTimeController.clear();
     destDiscriptionController.clear();
     destEntryFeeController.clear();
     addDestFileImage=null;
@@ -183,6 +186,7 @@ class MainProvider extends ChangeNotifier {
               dest["DEST_NAME"].toString() ?? "",
               dest["DEST_PLACE"].toString() ?? "",
               dest["DEST_DISTRICT"].toString()??"",
+              dest["DEST_BEST_TIME"].toString()??"",
               dest["DEST_IMAGE"].toString()??"",
               dest["DEST_DISCRIPTION"].toString()??"",
               dest["DEST_ENTRY_FEE"].toString()??"",
@@ -192,7 +196,7 @@ class MainProvider extends ChangeNotifier {
 
 
       }
-      print("Get destination");
+      // print("Get destination");
       notifyListeners();
     },);
   }
@@ -212,6 +216,7 @@ class MainProvider extends ChangeNotifier {
         destNameController.text=editDest["DEST_NAME"].toString()??"";
         destPlaceController.text=editDest["DEST_PLACE"].toString()??"";
         destDistrictController.text=editDest["DEST_DISTRICT"].toString()??"";
+        destDistrictController.text=editDest["DEST_BEST_TIME"].toString()??"";
         destDiscriptionController.text=editDest["DEST_DISCRIPTION"].toString()??"";
         destEntryFeeController.text=editDest["DEST_ENTRY_FEE"].toString()??"";
 
@@ -306,7 +311,7 @@ class MainProvider extends ChangeNotifier {
     addEvent["EVENT_DISCRIPTION"]=eventDiscriptionController.text;
     addEvent["EVENT_SLOT_AVAILABILITY"]=_isSwitched?"Available":"Not Available";
     addEvent["EVENT_ENTRY_FEE"]=eventEntryFeeController.text;
-    print("mmmmmmmmmmmmm");
+
 
     print("$addEvent");
     //check if there s an image file selected
@@ -314,11 +319,10 @@ class MainProvider extends ChangeNotifier {
       print("Image selected: ${addEventFileImg?.path}");
       String photoId = DateTime.now().millisecondsSinceEpoch.toString();
       ref = FirebaseStorage.instance.ref().child(photoId);
-      print("wwwwwwweeeeeeeeeee");
-      //Upload the image to firestore storage
+       //Upload the image to firestore storage
       try{
         await ref.putFile(addEventFileImg!).whenComplete(() async {
-          print("ssssssssssss");
+
           await ref.getDownloadURL().then((value) {
             addEvent["EVENT_IMAGE"] = value;
 
@@ -373,9 +377,8 @@ class MainProvider extends ChangeNotifier {
   }
  List<EventsModel> eventList=[];
  void getEvent(){
-   print("getttttttttt");
-   db.collection("EVENT").get().then((value) {
-     print("eeeeeeeeeeevvvvvvvvvvent");
+      db.collection("EVENT").get().then((value) {
+
      if(value.docs.isNotEmpty){
        eventList.clear();
        for(var element in value.docs){
@@ -390,7 +393,7 @@ class MainProvider extends ChangeNotifier {
              event["EVENT_ENTRY_FEE"]??"",
              event["EVENT_SLOT_AVAILABILITY"]??""
          ));
-         print("$event");
+         // print("$event");
        }
      }
      notifyListeners();
@@ -580,4 +583,14 @@ class MainProvider extends ChangeNotifier {
   //     notifyListeners();
   //   }
   // }
+
+
+  int _selectedIndex = -1;
+
+  int get selectedIndex => _selectedIndex;
+
+  void selectIndex(int index) {
+    _selectedIndex = index;
+    notifyListeners(); // Notify listeners to rebuild the UI
+  }
 }
