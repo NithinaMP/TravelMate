@@ -21,17 +21,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var width=MediaQuery.of(context).size.width;
     var height=MediaQuery.of(context).size.height;
     return Scaffold(backgroundColor: Colors.black,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(40),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-
-         title: Text(
-            "PROFILE",
-            style: TextStyle(fontFamily: "tradeWinds", fontSize: 20,color:Colors.white),
-          ),
-          centerTitle: true,
+      appBar:
+      AppBar(
+        backgroundColor: Colors.transparent,
+       title: Text("Edit Profile",
+          style: TextStyle(fontFamily: "bakbak", fontSize: 28,color:Colors.white),
         ),
+        leading: InkWell(
+            onTap: () {
+
+            },
+            // splashColor: Colors.transparent, // Remove splash color
+            // highlightColor: Colors.transparent, // Remove highlight color
+            child: Icon(Icons.arrow_back_ios_new_sharp,color: Colors.white,size: 40,)
+        ),
+        // centerTitle: true,
       ),
 
       body: SingleChildScrollView(
@@ -64,70 +68,133 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
 
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Container(
-                child: Column(
-                  children: [
-                    TextFormField(
+            SizedBox(height: 25,),
 
-                      decoration: InputDecoration(
-                          label: Text("USER NAME",style: TextStyle(fontFamily: "muktaregular",fontSize: 20,color: Colors.white),),
-                          enabledBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white)),
-                          border: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white,)),
-                          focusedBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white))
-
-                      ),
-
-
-                    ),
-                    SizedBox(height: 10,),
-                    TextFormField(
-
-                      decoration: InputDecoration(
-                          label: Text("PHONE NUMBER",style: TextStyle(fontFamily: "muktaregular",fontSize: 20,color: Colors.white),),
-                          enabledBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white)),
-                          border: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white,)),
-                          focusedBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white))
-
-                      ),
-
-
-                    ),
-                    SizedBox(height: 10,),
-                    TextFormField(
-
-                      decoration: InputDecoration(
-                          label: Text("PLACE",style: TextStyle(fontFamily: "muktaregular",fontSize: 20,color: Colors.white),),
-                          enabledBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white)),
-                          border: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white,)),
-                          focusedBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white))
-
-                      ),
-
-
-                    ),
-                    SizedBox(height: 10,),
-
-                  ],
+            Container(
+              child: TextField(
+                style: TextStyle(color: Colors.white,fontSize: 20,fontFamily: "benne",),
+                cursorColor: Colors.brown,
+                decoration: InputDecoration(prefixIcon: Icon(Icons.person_pin_outlined,color: Colors.brown,),
+                  label: Text("User Name",style: TextStyle(fontFamily: "baloo",fontSize: 18,color: Colors.white),),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.brown),borderRadius: BorderRadius.circular(30)),
+                  // hintStyle: TextStyle(color: Colors.white)
                 ),
               ),
             ),
-            SizedBox(height: 25,),
-            SizedBox(
-              height: height/15,
-              width: width/3,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text("SAVE",style: TextStyle(color: Colors.white),),
-                style: ElevatedButton.styleFrom(backgroundColor: cstOrange1,
+            SizedBox(height: 15,),
+            Container(
+              child: TextField(
 
+                style: TextStyle(color: Colors.white,fontSize: 20,fontFamily: "belleza",),
+                keyboardType: TextInputType.number,maxLength: 10,
+                cursorColor: Colors.brown,
+                decoration: InputDecoration(counterText: "",
+                  prefixIcon: Icon(Icons.phone,color: Colors.brown,),
+                  label: Text("Phone Number",style: TextStyle(fontFamily: "baloo",fontSize: 18,color: Colors.white),),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.brown),borderRadius: BorderRadius.circular(30)),
+                  // hintStyle: TextStyle(color: Colors.white)
                 ),
-
               ),
-            )
+            ),
+            SizedBox(height: 15,),
+
+            Container(
+              child: TextField(
+
+                style: TextStyle(color: Colors.white,fontSize: 20,fontFamily: "benne",),
+                cursorColor: Colors.brown,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.edit_location_outlined,color: Colors.brown,),
+                  label: Text("Place",style: TextStyle(fontFamily: "baloo",fontSize: 18,color: Colors.white),),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.brown),borderRadius: BorderRadius.circular(30)),
+                  // hintStyle: TextStyle(color: Colors.white)
+                ),
+              ),
+            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(20),
+            //   child: Container(
+            //     child: Column(
+            //       children: [
+            //         TextFormField(
+            //
+            //           decoration: InputDecoration(
+            //               label: Text("USER NAME",style: TextStyle(fontFamily: "muktaregular",fontSize: 20,color: Colors.white),),
+            //               enabledBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white)),
+            //               border: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white,)),
+            //               focusedBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white))
+            //
+            //           ),
+            //
+            //
+            //         ),
+            //         SizedBox(height: 10,),
+            //         TextFormField(
+            //
+            //           decoration: InputDecoration(
+            //               label: Text("PHONE NUMBER",style: TextStyle(fontFamily: "muktaregular",fontSize: 20,color: Colors.white),),
+            //               enabledBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white)),
+            //               border: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white,)),
+            //               focusedBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white))
+            //
+            //           ),
+            //
+            //
+            //         ),
+            //         SizedBox(height: 10,),
+            //         TextFormField(
+            //
+            //           decoration: InputDecoration(
+            //               label: Text("PLACE",style: TextStyle(fontFamily: "muktaregular",fontSize: 20,color: Colors.white),),
+            //               enabledBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white)),
+            //               border: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white,)),
+            //               focusedBorder: OutlineInputBorder(borderRadius:BorderRadius.circular(20),borderSide: BorderSide(color: Colors.white))
+            //
+            //           ),
+            //
+            //
+            //         ),
+            //         SizedBox(height: 10,),
+            //
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            SizedBox(height:height/5,),
+            InkWell(
+              onTap: () {
+
+              },
+              splashColor: Colors.transparent, // Remove splash color
+              highlightColor: Colors.transparent, // Remove highlight color
+              child: Container(
+                height: 55,
+                width: width/2.5,
+                decoration: BoxDecoration(gradient: admingradient,
+                borderRadius: BorderRadius.circular(20)),
+                child: Center(child: Text("Save",
+                  style: TextStyle(color: Colors.white,fontFamily: "belleza",fontSize: 20),
+                ),
+                ),
+              ),
+            ),
+            // SizedBox(
+            //   height: height/15,
+            //   width: width/3,
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.pop(context);
+            //     },
+            //     child: Text("SAVE",style: TextStyle(color: Colors.white),),
+            //     style: ElevatedButton.styleFrom(backgroundColor: cstOrange1,
+            //
+            //     ),
+            //
+            //   ),
+            // )
 
 
           ],
@@ -147,10 +214,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       //           },
       //             child: Column(
       //               children: [
-      //                 Icon(Icons.home,color:Colors.white,),
-      //                 Text("Home",style: TextStyle(
-      //                     color: Colors.white,fontFamily: "allerta"
-      //                 ),),
+      //                 Icon(Icons.home,color:Colors.white,size: 30,),
+                      // Text("Home",style: TextStyle(
+                      //     color: Colors.white,fontFamily: "allerta"
+                      //                 ),),
       //               ],
       //             ),
       //           ),
@@ -164,10 +231,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       //             child: Column(
       //               children: [
       //                 // Image.asset("assets/icons/like.png",scale: 7,color:  Colors.red,),
-      //                 Icon(Icons.favorite,color: Colors.white,),
-      //                 Text("Wish",style: TextStyle(
-      //                     color:  Colors.white,fontFamily: "allerta"
-      //                 ),),
+      //                 Icon(Icons.favorite_outlined,color: Colors.white,size: 30,),
+                      // Text("Wish",style: TextStyle(
+                      //     color:  Colors.white,fontFamily: "allerta"
+                      //                 ),),
       //               ],
       //             ),
       //           ),
@@ -179,11 +246,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       //           },
       //             child: Column(
       //               children: [
-      //                 Icon(Icons.person,color:  Colors.yellow,),
-      //                 Text("Account",style: TextStyle(
-      //                     color:  Colors.white,fontFamily: "allerta"
-      //                 ),
-      //                 ),
+      //                 Icon(Icons.person_2_outlined,color: Color(0xffD1A25f),size: 30,),
+                      // Text("Account",style: TextStyle(
+                      //     color:  Colors.white,fontFamily: "allerta"
+                      // ),
+                      //                 ),
       //               ],
       //             ),
       //           ),

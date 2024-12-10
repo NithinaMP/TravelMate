@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:travelmate/provider/loginProvider.dart';
 import 'package:travelmate/provider/mainProvider.dart';
 import 'package:travelmate/user/profileScreen.dart';
+import 'package:travelmate/user/profileView.dart';
 import 'package:travelmate/user/wishListScreen.dart';
 
 import '../constants/constant_colors.dart';
@@ -342,7 +343,9 @@ class _UserHomePageState extends State<UserHomePage> {
                                                     fontSize: 20,
                                                   ),
                                                 ),
-                                                Text(
+                                                Row(
+                                            children: [
+                                              Icon(Icons.place_outlined,color: Colors.white,size: 20,),Text(
                                                   dest.destPlace,
                                                   style: TextStyle(
                                                     color: Colors.white,
