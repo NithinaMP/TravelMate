@@ -152,68 +152,68 @@ class WishlistScreen extends StatelessWidget {
               ]
           ),
         ),
-        bottomNavigationBar: Container(
-        height: 65,
-        width: 350,
-        color: Colors.black,
-
-        child:Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 70,top: 10),
-              child: InkWell(onTap:  () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => UserHomePage(),));
-              },
-                child: Column(
-                  children: [
-                    Icon(Icons.home,color:Colors.white,size: 30,),
+    //     bottomNavigationBar: Container(
+    //     height: 65,
+    //     width: 350,
+    //     color: Colors.black,
+    //
+    //     child:Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //       children: [
+    //         Padding(
+    //           padding: const EdgeInsets.only(right: 70,top: 10),
+    //           child: InkWell(onTap:  () {
+    //             Navigator.push(context, MaterialPageRoute(builder: (context) => UserHomePage(),));
+    //           },
+    //             child: Column(
+    //               children: [
+    //                 Icon(Icons.home,color:Colors.white,size: 30,),
                     // Text("Home",style: TextStyle(
                     //     color: Colors.white,fontFamily: "allerta"
-                    // ),),
-                  ],
-                ),
-              ),
-            ),
-
-            InkWell(onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => WishlistScreen(),));
-            },
-              child: Padding(
-                padding: const EdgeInsets.only(right:80,top: 10),
-                child: Column(
-                  children: [
-                    // Image.asset("assets/icons/like.png",scale: 7,color:  Colors.red,),
-                    Icon(Icons.favorite_outlined,
+                    //                 ),),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //
+    //         InkWell(onTap: () {
+    //           Navigator.push(context, MaterialPageRoute(builder: (context) => WishlistScreen(),));
+    //         },
+    //           child: Padding(
+    //             padding: const EdgeInsets.only(right:80,top: 10),
+    //             child: Column(
+    //               children: [
+    //                 // Image.asset("assets/icons/like.png",scale: 7,color:  Colors.red,),
+    //                 Icon(Icons.favorite_outlined,
                       // color: Color(0xfffff176),
                       color: Color(0xffD1A25f),
                       size: 30,),
                     // Text("Wish",style: TextStyle(
                     //     color:  Colors.white,fontFamily: "allerta"
-                    // ),),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top:10),
-              child: InkWell(onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileScreen(),));
-              },
-                child: Column(
-                  children: [
-                  Icon(Icons.person_2_outlined,color: Colors.white,size: 30,),
+                    //                 ),),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //         Padding(
+    //           padding: const EdgeInsets.only(top:10),
+    //           child: InkWell(onTap: () {
+    //             Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileScreen(),));
+    //           },
+    //             child: Column(
+    //              children: [
+    //                 Icon(Icons.person_2_outlined,color: Colors.white,size: 30,),
                     // Text("Account",style: TextStyle(
                     //     color:  Colors.white,fontFamily: "allerta"
                     // ),
-                    // ),
-                  ],
-                ),
-              ),
-            ),
-
-          ],
-        )
-    ),
+                    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //
+    //       ],
+    //     )
+    // ),
     );
   }
 }
