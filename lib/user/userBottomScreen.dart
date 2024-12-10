@@ -8,7 +8,10 @@ import 'package:travelmate/user/wishListScreen.dart';
 import 'homeScreen.dart';
 
 class UserBottomScreen extends StatefulWidget {
-  const UserBottomScreen({super.key});
+  String userId;
+  UserBottomScreen({super.key,
+  required this.userId
+  });
 
   @override
   State<UserBottomScreen> createState() => _UserBottomScreenState();
@@ -25,7 +28,7 @@ class _UserBottomScreenState extends State<UserBottomScreen> {
         builder: (context,value,child) {
           value.getDestination();
           value.getEvent();
-          return UserHomePage();
+          return UserHomePage(userID: widget.userId,);
         }
       ),
       WishlistScreen(),

@@ -189,7 +189,8 @@ class MainProvider extends ChangeNotifier {
               dest["DEST_BEST_TIME"].toString()??"",
               dest["DEST_IMAGE"].toString()??"",
               dest["DEST_DISCRIPTION"].toString()??"",
-              dest["DEST_ENTRY_FEE"].toString()??"",
+              num.tryParse(dest["DEST_ENTRY_FEE"].toString())??0,
+              // dest["DEST_ENTRY_FEE"]??"",
               dest["DEST_SLOT_AVAILABILITY"].toString()??""
           ));
         }
@@ -519,78 +520,115 @@ class MainProvider extends ChangeNotifier {
 
 
 
-  // ---------------------------------------------------
-  // File? selectedFile;
-  // String fileURL = "";
-  //
-  // // Add this function in your MainProvider class to handle image picking and cropping
-  // Future<void> getImage(String from, {required ImageSource source}) async {
-  //   final imagePicker = ImagePicker();
-  //   final pickedImage = await imagePicker.pickImage(source: source);
-  //
-  //   if (pickedImage != null) {
-  //     await cropImage(pickedImage.path, from);
-  //   } else {
-  //     print('No image selected.');
-  //   }
-  // }
-  //
-  // // Assuming you already have the cropImage function here or elsewhere
-  // Future<void> cropImage(String path, String from) async {
-  //   final croppedFile = await ImageCropper().cropImage(
-  //     sourcePath: path,
-  //     aspectRatioPresets: Platform.isAndroid
-  //         ? [
-  //       CropAspectRatioPreset.square,
-  //       CropAspectRatioPreset.ratio3x2,
-  //       CropAspectRatioPreset.original,
-  //       CropAspectRatioPreset.ratio4x3,
-  //       CropAspectRatioPreset.ratio16x9,
-  //     ]
-  //         : [
-  //       CropAspectRatioPreset.original,
-  //       CropAspectRatioPreset.square,
-  //       CropAspectRatioPreset.ratio3x2,
-  //       CropAspectRatioPreset.ratio4x3,
-  //       CropAspectRatioPreset.ratio5x3,
-  //       CropAspectRatioPreset.ratio5x4,
-  //       CropAspectRatioPreset.ratio7x5,
-  //       CropAspectRatioPreset.ratio16x9,
-  //     ],
-  //     uiSettings: [
-  //       AndroidUiSettings(
-  //           toolbarTitle: 'Cropper',
-  //           toolbarColor: Colors.white,
-  //           toolbarWidgetColor: Colors.black,
-  //           initAspectRatio: CropAspectRatioPreset.original,
-  //           lockAspectRatio: false),
-  //       IOSUiSettings(
-  //         title: 'Cropper',
-  //       ),
-  //     ],
-  //   );
-  //
-  //   if (croppedFile != null) {
-  //     // Save or update the file URL as needed based on `from`
-  //     if (from == "AddEvent") {
-  //       selectedFile = File(croppedFile.path);
-  //       fileURL = "EventFileUrl"; // Set event-specific file URL logic here
-  //     } else if (from == "AddDestination") {
-  //       selectedFile = File(croppedFile.path);
-  //       fileURL = "DestinationFileUrl"; // Set destination-specific file URL logic here
-  //     }
-  //     // Notify listeners if necessary (for UI updates)
-  //     notifyListeners();
-  //   }
-  // }
+//   // ------------------------------------------Make ticket booking----------------------------------------------------------------------------------
+
+  //for selecte the date from calnder.
+
+  DateTime? _selectedDate;
+  DateTime? get selectedDate=>_selectedDate;
+  void setSelectedDate(DateTime date){
+    _selectedDate=date;
+    notifyListeners();
+  }
 
 
-  int _selectedIndex = -1;
+  int selectedIndex = -1;
+  String destFee = '0'; // Default fee, which will be updated dynamically
 
-  int get selectedIndex => _selectedIndex;
-
+  // Method to select a member count
   void selectIndex(int index) {
-    _selectedIndex = index;
+    selectedIndex = index;
     notifyListeners(); // Notify listeners to rebuild the UI
   }
+
+  // Method to get selected count number
+  int get selectedCount => selectedIndex + 1; // Because index starts from 0, but count starts from 1
+
+  // Method to set the destination fee after fetching from Firestore
+  void setDestFee(String fee) {
+    destFee = fee;
+    notifyListeners(); // Notify listeners when fee is updated
+  }
+
+  // Method to get the total fee
+  double get totalFee {
+    double entryFee = double.tryParse(destFee) ?? 0.0;
+    return selectedCount * entryFee;
+  }
+
+  // Method to get GST (assuming GST is 2%)
+  double get gst {
+    return totalFee * 0.02; // 2% GST
+  }
+
+  // Method to get the final total amount
+  double get totalAmount {
+    return totalFee + gst;
+  }
+
+
+  //for reseting ticket booing
+
+  void destResetBooking(){
+    _selectedDate=null;
+    selectedIndex=-1;
+    destFee='0';
+    notifyListeners();
+  }
+
+
+
+
+
+  void destinationBooking(  String userId,String destId, String destName,String destDistrict,String destPlace, String destEntryFee,
+      num totalTickets, num totalPrice, String destImage,)async{
+    // Check if the userId is empty. If it is, we cannot proceed with the booking
+    if(userId.isEmpty){
+      print("User id is missing");
+      return;
+    }
+
+    // Check if selectedDate is null. If it is, we cannot proceed without a date
+    if(selectedDate==null){
+      print("Invalid date selected");
+      return;
+    }
+    String destID=DateTime.now().microsecondsSinceEpoch.toString();
+    print("Booking details:");
+    print("User ID:$userId,Destination Id: $destId,Selected date :$selectedDate");
+    print("navigate to destination booking");
+    HashMap<String,dynamic>destTicket=HashMap();
+    destTicket["DEST_ID"]=destId;
+    destTicket["DEST_NAME"]=destName;
+    destTicket["DEST_DISTRICT"]=destDistrict;
+    destTicket["DEST_ENTRY_FEE"]=destEntryFee;
+    destTicket["DEST_IMAGE"]=destImage;
+    destTicket["DEST_PLACE"]=destPlace;
+    destTicket["TOTAL_TICKET"]=totalTickets;
+    destTicket["TOTAL_PRICE"]=totalPrice;
+    destTicket["DATE"]=selectedDate;
+
+
+    // db.collection("USERS").doc(userId).collection("DEST_TICKET").doc(destId).set(destTicket).then((value) {
+    //   print("Booking added successfully");
+    // },).catchError((error){
+    //   print("Failed to add booking : $error");
+    // });
+    // notifyListeners();
+    try{
+    await db.collection("USERS").doc(userId).collection("DEST_TICKET").doc(destID).set(destTicket);
+
+      print("Booking added successfully");
+
+    destResetBooking();
+    }catch(error){
+      print("Failed to add booking : $error");
+    }
+    notifyListeners();
+  }
+
+
+
 }
+
+

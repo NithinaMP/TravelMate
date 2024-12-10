@@ -10,12 +10,13 @@ import 'bookTicket.dart';
 import 'confirmBooking.dart';
 
 class DestinationScreen extends StatelessWidget {
-  DestinationModel destM;
-
+  DestinationModel item;
+  String userId;
 
   DestinationScreen({
     Key? key,
-    required this.destM,
+    required this.item,
+    required this.userId,
 
   }) : super(key: key);
 
@@ -27,7 +28,7 @@ class DestinationScreen extends StatelessWidget {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(destM.destName, style: TextStyle(color: Colors.white)),
+          title: Text(item.destName, style: TextStyle(color: Colors.white)),
           backgroundColor: Colors.black,
         ),
         body: SingleChildScrollView(
@@ -38,7 +39,7 @@ class DestinationScreen extends StatelessWidget {
                 height: 300,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(destM.destImage),
+                    image: NetworkImage(item.destImage),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -51,7 +52,7 @@ class DestinationScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          destM.destName,
+                          item.destName,
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -59,19 +60,19 @@ class DestinationScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          '${destM.destPlace}, ${destM.destDistrict}',
+                          '${item.destPlace}, ${item.destDistrict}',
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.grey,
                           ),
                         ),
                         SizedBox(height: 16),
-                        Text(destM.destDescription,
+                        Text(item.destDescription,
                           style: TextStyle(fontSize: 16),
                         ),
       
                         SizedBox(height: 16),
-                        Text("Best time to visit:   ${destM.destBestTime}", style: TextStyle(
+                        Text("Best time to visit:   ${item.destBestTime}", style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                     ),),
@@ -87,13 +88,17 @@ class DestinationScreen extends StatelessWidget {
       
                           ),
                         ),
+                        SizedBox(height: 10,),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.yellow.shade600
+                          ),
                           onPressed: () {
                             showBottomSheet(context);
                             // callNext(context, BookticketWidget());
                             // Implement the action for booking or more details
                           },
-                          child: Text("Book Now"),
+                          child: Text("Continue",style: TextStyle(color: Colors.black),),
                         ),
                       ],
                     );
@@ -186,9 +191,10 @@ class DestinationScreen extends StatelessWidget {
                           onPressed: dvalue.selectedIndex == -1
                               ? null // Button disabled when no number is selected
                               : () {
-                            // Handle "Select seats" button press
-                            // Navigator.pop(context);
-                            Terms_condition(context);
+                            // proceed with booking
+
+                            print("Navigate to terms and conditions $userId");
+                            Terms_condition(context,dvalue.selectedCount);
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 50),
@@ -197,7 +203,7 @@ class DestinationScreen extends StatelessWidget {
                                 : Colors.redAccent, // Active button color
                           ),
                           child: Text(
-                            "Select seats",
+                            "Select",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -221,7 +227,10 @@ class DestinationScreen extends StatelessWidget {
     );
   }
 
-  void Terms_condition(BuildContext context) {
+  void Terms_condition(BuildContext context,num selectedCount) {
+
+    //calculate total entry fee
+    num totalEntryFee=item.destEntryFee*selectedCount;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Allows proper positioning
@@ -263,8 +272,18 @@ class DestinationScreen extends StatelessWidget {
                       minimumSize: Size(double.infinity, 50),
                     ),
                     onPressed: () {
-                      Center(child: CircularProgressIndicator());
-                      callNext(context, ConfirmBooking());
+                      print("navigate to confirmbooking $userId");
+
+                      callNext(context,
+                          ConfirmBooking(
+                        userId: userId,
+                        destId: item.destId,
+                        destName: item.destName,
+                        destPlace: item.destPlace,
+                        destDistrict: item.destDistrict,
+                        destFee: totalEntryFee.toString(),
+                            selectedCount:selectedCount.toInt(), destImage: item.destImage,
+                      ));
                   
                 }, child: Text("Ok",style: TextStyle(color: Colors.white,fontSize: 16,
                   fontWeight: FontWeight.bold,),))

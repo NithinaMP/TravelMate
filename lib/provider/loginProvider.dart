@@ -93,7 +93,7 @@ class LoginProvider extends ChangeNotifier{
             print("Navigate to user side");
             mpro.getDestination();
             mpro.getDestination();
-            callNextReplacement(context, UserBottomScreen());
+            callNextReplacement(context, UserBottomScreen(userId: loginId,));
           } else {
             print("Invalid user type");
             showSnackBarAlert(context, "INVALID USER");

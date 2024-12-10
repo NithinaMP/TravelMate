@@ -10,8 +10,11 @@ import 'package:travelmate/user/userBottomScreen.dart';
 
 import 'homeScreen.dart';
 
-class SignupScreen extends StatelessWidget {
-  const SignupScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+
+  RegisterScreen({super.key,
+
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +136,6 @@ class SignupScreen extends StatelessWidget {
                             GestureDetector(
                               onTap: () {
                                 value.addRegistraion(context);
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => UserBottomScreen(),));
                               },
                               child: Container(
                                 height: height/12,

@@ -4,7 +4,25 @@ import 'package:flutter/material.dart';
 import '../constants/globalMethods.dart';
 
 class PaymentScreen extends StatelessWidget {
-  const PaymentScreen({super.key});
+  String userId,
+      destId,
+      destName,
+      destPlace,
+      destDistrict,
+      destFee,destImage;
+  int  selectedCount;
+  num totalAmount;
+   PaymentScreen({super.key,
+     required this.userId,
+     required this.destId,
+     required this.destName,
+     required this.destPlace,
+     required this.destDistrict,
+     required this.destFee,
+     required this.destImage,
+     required this.selectedCount,
+     required this.totalAmount
+   });
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +62,8 @@ class PaymentScreen extends StatelessWidget {
 
                   children: [
                     Text("Amount Payable"),
-                    Text("₹1000"),
+                    Text("₹${totalAmount}"),
+
                   ],
                 ),
               ),// Container color
@@ -56,7 +75,7 @@ class PaymentScreen extends StatelessWidget {
 
           InkWell(
             onTap: () {
-              showPaymentConfirmation(context);
+              showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destFee, selectedCount, totalAmount);
             },
 
             child: Container(
@@ -78,7 +97,8 @@ class PaymentScreen extends StatelessWidget {
           SizedBox(height: 10,),
           InkWell(
             onTap: () {
-              showPaymentConfirmation(context);
+              showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destFee, selectedCount, totalAmount);
+              // showPaymentConfirmation(context, "userId", "destId");
             },
             child: Container(
               height: height/10,
@@ -152,192 +172,4 @@ class ZigZagClipper extends CustomClipper<Path> {
 }
 
 
-// import 'package:flutter/material.dart';
-// import 'package:travelmate/user/paymentSuccessfull.dart';
-//
-// class PaymentScreen extends StatefulWidget {
-//   const PaymentScreen({super.key});
-//
-//   @override
-//   State<PaymentScreen> createState() => _PaymentScreenState();
-// }
-//
-// class _PaymentScreenState extends State<PaymentScreen> {
-//   int? openDropdownIndex; // Track which dropdown is open
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     var height = MediaQuery.of(context).size.height;
-//     var width = MediaQuery.of(context).size.width;
-//
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Payment"),
-//         centerTitle: true,
-//         elevation: 0,
-//         backgroundColor: Colors.white,
-//         bottom: PreferredSize(
-//           preferredSize: const Size.fromHeight(1.0),
-//           child: Container(
-//             color: Colors.black12,
-//             height: 0.5,
-//           ),
-//         ),
-//       ),
-//       backgroundColor: const Color(0xfff8f8f1),
-//       body: Column(
-//         children: [
-//           ClipPath(
-//             clipper: ZigZagClipper(),
-//             child: Container(
-//               width: double.infinity,
-//               height: height / 10,
-//               decoration: const BoxDecoration(
-//                 color: Color(0xffeef1b9),
-//               ),
-//               child: const Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 15),
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: [
-//                     Text("Amount Payable"),
-//                     Text("₹1000"),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//           const SizedBox(height: 20),
-//           const Text(
-//             "PAYMENT OPTIONS",
-//             style: TextStyle(color: Colors.grey),
-//           ),
-//           const SizedBox(height: 20),
-//           Column(
-//             children: [
-//               buildPaymentOption(
-//                 index: 0,
-//                 height: height,
-//                 width: width,
-//                 imagePath: "assets/image/gpay.png",
-//                 paymentMethod: "Google Pay",
-//                 context: context,
-//               ),
-//               buildPaymentOption(
-//                 index: 1,
-//                 height: height,
-//                 width: width,
-//                 imagePath: "assets/image/Paytm_logo.jpg",
-//                 paymentMethod: "Paytm",
-//                 context: context,
-//               ),
-//               buildPaymentOption(
-//                 index: 2,
-//                 height: height,
-//                 width: width,
-//                 imagePath: "assets/image/bpi.png",
-//                 paymentMethod: "Bhim",
-//                 context: context,
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget buildPaymentOption({
-//     required int index,
-//     required double height,
-//     required double width,
-//     required String imagePath,
-//     required String paymentMethod,
-//     required BuildContext context,
-//   }) {
-//     return Column(
-//       children: [
-//         GestureDetector(
-//           onTap: () {
-//             setState(() {
-//               openDropdownIndex = openDropdownIndex == index ? null : index;
-//             });
-//           },
-//           child: Container(
-//             height: height / 10,
-//             width: width,
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               border: Border.symmetric(
-//                 horizontal: BorderSide(color: Colors.grey.shade300),
-//               ),
-//             ),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceAround,
-//               children: [
-//                 Image.asset(imagePath, scale: 14),
-//                 Text(
-//                   paymentMethod,
-//                   style: const TextStyle(fontSize: 16),
-//                 ),
-//                 Icon(
-//                   openDropdownIndex == index
-//                       ? Icons.arrow_drop_up_outlined
-//                       : Icons.arrow_drop_down_outlined,
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//         if (openDropdownIndex == index)
-//           Container(
-//             width: width,
-//             color: Colors.green,
-//             padding: const EdgeInsets.all(10),
-//             child: Center(
-//               child: GestureDetector(
-//                 onTap: () {
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(
-//                       builder: (context) => const PaymentSuccess(),
-//                     ),
-//                   );
-//                 },
-//                 child: const Text(
-//                   "Pay",
-//                   style: TextStyle(color: Colors.white, fontSize: 16),
-//                 ),
-//               ),
-//             ),
-//           ),
-//       ],
-//     );
-//   }
-// }
-//
-// class ZigZagClipper extends CustomClipper<Path> {
-//   @override
-//   Path getClip(Size size) {
-//     double zigzagHeight = 10.0;
-//     double zigzagWidth = 20.0;
-//
-//     final Path path = Path();
-//     path.moveTo(0, 0);
-//     path.lineTo(size.width, 0);
-//     path.lineTo(size.width, size.height - zigzagHeight);
-//
-//     for (double x = size.width; x > 0; x -= zigzagWidth) {
-//       path.lineTo(x - zigzagWidth / 2, size.height);
-//       path.lineTo(x - zigzagWidth, size.height - zigzagHeight);
-//     }
-//
-//     path.lineTo(0, size.height - zigzagHeight);
-//     path.lineTo(0, 0);
-//     path.close();
-//
-//     return path;
-//   }
-//
-//   @override
-//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-// }
+

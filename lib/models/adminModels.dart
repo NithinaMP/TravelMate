@@ -6,7 +6,7 @@ class DestinationModel{
   String destBestTime;
   String destImage;
   String destDescription;
-  String destEntryFee;
+  num destEntryFee;
   String destSlotAvailability;
 
   DestinationModel(
