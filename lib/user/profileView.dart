@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/constants/constant_colors.dart';
+import 'package:travelmate/user/myTicketScreen.dart';
 import 'package:travelmate/user/profileScreen.dart';
 
 class ProfileviewWIdget extends StatelessWidget {
@@ -111,7 +112,9 @@ class ProfileviewWIdget extends StatelessWidget {
                                   title: Text("My Tickets",style: TextStyle(fontFamily: "benne",fontSize: 18,color: Colors.white),),
                                   subtitle: Text("Find booked tickets, price and more",style: TextStyle(fontFamily: "baloo",fontSize: 12,color: Colors.grey),),
                                   trailing: Icon(Icons.arrow_forward_ios_sharp,size: 20,color: Colors.white,),
-                                  onTap: () {},
+                                  onTap: () {
+                                    callNext(context, MyTicketScreen());
+                                  },
                                 )
                               ],
                             ),

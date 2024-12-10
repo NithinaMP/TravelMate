@@ -21,23 +21,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var width=MediaQuery.of(context).size.width;
     var height=MediaQuery.of(context).size.height;
     return Scaffold(backgroundColor: Colors.black,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(40),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-         title: Text("Edit Profile",
-            style: TextStyle(fontFamily: "bakbak", fontSize: 28,color:Colors.white),
-          ),
-          leading: InkWell(
-              onTap: () {
-
-              },
-              // splashColor: Colors.transparent, // Remove splash color
-              // highlightColor: Colors.transparent, // Remove highlight color
-              child: Icon(Icons.arrow_back_ios_new_sharp,color: Colors.white,size: 40,)
-          ),
-          // centerTitle: true,
+      appBar:
+      AppBar(
+        backgroundColor: Colors.transparent,
+       title: Text("Edit Profile",
+          style: TextStyle(fontFamily: "bakbak", fontSize: 28,color:Colors.white),
         ),
+        leading: InkWell(
+            onTap: () {
+
+            },
+            // splashColor: Colors.transparent, // Remove splash color
+            // highlightColor: Colors.transparent, // Remove highlight color
+            child: Icon(Icons.arrow_back_ios_new_sharp,color: Colors.white,size: 40,)
+        ),
+        // centerTitle: true,
       ),
 
       body: SingleChildScrollView(
@@ -70,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
 
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 25,),
 
             Container(
               child: TextField(
@@ -100,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            // SizedBox(height: 5,),
+            SizedBox(height: 15,),
 
             Container(
               child: TextField(
@@ -248,7 +246,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
                   child: Column(
                     children: [
-                      Icon(Icons.person_2_outlined,color:  Colors.orange,size: 30,),
+                      Icon(Icons.person_2_outlined,color: Color(0xffD1A25f),size: 30,),
                       // Text("Account",style: TextStyle(
                       //     color:  Colors.white,fontFamily: "allerta"
                       // ),

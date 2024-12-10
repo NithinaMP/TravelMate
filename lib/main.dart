@@ -52,8 +52,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home: MyTicketScreen(),
-        //  home: SplashScreen(),
-         home: UserHomePage(),
+         home: SplashScreen(),
+        //  home: UserHomePage(),
 
       ),
     );
