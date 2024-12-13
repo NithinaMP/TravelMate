@@ -134,7 +134,7 @@ class adminhomeWidget extends StatelessWidget {
                    subtitle: Text("Edit location details,price and more",style: TextStyle(fontFamily: "baloo",fontSize: 13,color: Colors.white),),
                    trailing: Icon(Icons.arrow_forward_ios_sharp,size: 20,color: Colors.white,),
                              onTap: () {
-                               callNext(context, MyTicketScreen());
+                               // callNext(context, MyTicketScreen());
                              },
                  ),
                ],

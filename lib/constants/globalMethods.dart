@@ -112,7 +112,7 @@ void showDeleteConfirmation(BuildContext context,String id,String from){
 //     },
 //   );
 // }
-void showPaymentConfirmation(BuildContext context,String userId,String destId,String destName,String destDistrict,String destPlace,String destImage,String destFee,num selectedCount,num totalAmount) {
+void showPaymentConfirmation(BuildContext context,String userId,String destId,String destName,String destDistrict,String destPlace,String destImage,String destEntryFee,num totalTickets,num totalAmount,num subTotal) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -134,12 +134,14 @@ void showPaymentConfirmation(BuildContext context,String userId,String destId,St
                   Navigator.pop(context);
                   // tValue.destinationBooking(userId, destId);
                   print("kkkkkkkkkkkkk  $userId lll");
-                  tValue.destinationBooking(userId, destId, destName, destDistrict, destPlace, destFee, selectedCount, totalAmount, destImage);
+                  tValue.destinationBooking(userId, destId, destName, destDistrict, destPlace, destEntryFee, totalTickets, totalAmount, subTotal, destImage);
+                  // tValue.destinationBooking(userId, destId, destName, destDistrict, destPlace, destFee, selectedCount, totalAmount, destImage);
 
                   // Use StatefulWidget to handle CircularProgressIndicator
                   Navigator.push(
                     context,
                     MaterialPageRoute(
+                      // builder: (context) => PaymentSuccess(userId: userId,),
                       builder: (context) => PaymentProgressScreen(userId: userId,),
                     ),
                   );

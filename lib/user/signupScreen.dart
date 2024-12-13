@@ -135,7 +135,7 @@ class RegisterScreen extends StatelessWidget {
 
                             GestureDetector(
                               onTap: () {
-                                value.addRegistraion(context);
+                                value.addRegistraion(context,"NEW","");
                               },
                               child: Container(
                                 height: height/12,

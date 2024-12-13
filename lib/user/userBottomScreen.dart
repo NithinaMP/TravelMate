@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travelmate/provider/mainProvider.dart';
-import 'package:travelmate/user/profileScreen.dart';
+import 'package:travelmate/user/profileEditScreen.dart';
+import 'package:travelmate/user/useProfileScreen.dart';
 import 'package:travelmate/user/wishListScreen.dart';
 
 import 'homeScreen.dart';
@@ -32,7 +33,7 @@ class _UserBottomScreenState extends State<UserBottomScreen> {
         }
       ),
       WishlistScreen(),
-      ProfileScreen()
+      ProfileScreen(userId: widget.userId,)
     ];
   }
 

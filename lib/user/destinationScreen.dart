@@ -281,7 +281,7 @@ class DestinationScreen extends StatelessWidget {
                         destName: item.destName,
                         destPlace: item.destPlace,
                         destDistrict: item.destDistrict,
-                        destFee: totalEntryFee.toString(),
+                        destEntryFee: totalEntryFee.toString(),
                             selectedCount:selectedCount.toInt(), destImage: item.destImage,
                       ));
                   

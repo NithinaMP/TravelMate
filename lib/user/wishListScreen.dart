@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:travelmate/user/profileScreen.dart';
+import 'package:travelmate/user/profileEditScreen.dart';
 
 import 'homeScreen.dart';
 class WishlistScreen extends StatelessWidget {
@@ -185,8 +185,8 @@ class WishlistScreen extends StatelessWidget {
     //                 // Image.asset("assets/icons/like.png",scale: 7,color:  Colors.red,),
     //                 Icon(Icons.favorite_outlined,
                       // color: Color(0xfffff176),
-                      color: Color(0xffD1A25f),
-                      size: 30,),
+                      // color: Color(0xffD1A25f),
+                      // size: 30,),
                     // Text("Wish",style: TextStyle(
                     //     color:  Colors.white,fontFamily: "allerta"
                     //                 ),),

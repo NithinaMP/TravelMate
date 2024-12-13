@@ -2,13 +2,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/provider/loginProvider.dart';
 import 'package:travelmate/provider/mainProvider.dart';
-import 'package:travelmate/user/profileScreen.dart';
-import 'package:travelmate/user/profileView.dart';
+import 'package:travelmate/user/profileEditScreen.dart';
+import 'package:travelmate/user/useProfileScreen.dart';
 import 'package:travelmate/user/wishListScreen.dart';
 
 import '../constants/constant_colors.dart';
+import 'EventDetail.dart';
+import 'allEventScreen.dart';
 import 'destinationScreen.dart';
 import 'myTicketScreen.dart';
 
@@ -134,7 +137,7 @@ class _UserHomePageState extends State<UserHomePage> {
           //             ),
           //             onTap: () {
           //               Navigator.push(context, MaterialPageRoute(
-          //                 builder: (context) => ProfileScreen(),
+          //                 builder: (context) => ProfileScreen(userId: widget.userID,),
           //               )
           //               );
           //             },
@@ -224,10 +227,24 @@ class _UserHomePageState extends State<UserHomePage> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0,bottom: 10.0),
-                          child: Text("Upcoming Events",
-                            style: TextStyle(fontSize: 20,fontFamily: "bakbak",color: Colors.white),),
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0,bottom: 10.0),
+                              child: Text("Upcoming Events",
+                                style: TextStyle(fontSize: 20,fontFamily: "bakbak",color: Colors.white),),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                callNext(context, AllEventScreen());
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8.0,bottom: 10.0),
+                                child: Text("View",
+                                  style: TextStyle(fontSize: 15,fontFamily: "bakbak",color: Colors.white),),
+                              ),
+                            ),
+                          ],
                         ),
 
                         Consumer<MainProvider>(
@@ -355,9 +372,9 @@ class _UserHomePageState extends State<UserHomePage> {
                                                 ),
                                               ],
                                             ),
-                                          ),
+                                         ] ),
                                         ),
-                                      ],
+                                  )],
                                     ),
                                   ),
                                 );

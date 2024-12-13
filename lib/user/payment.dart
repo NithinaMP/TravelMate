@@ -9,7 +9,10 @@ class PaymentScreen extends StatelessWidget {
       destName,
       destPlace,
       destDistrict,
-      destFee,destImage;
+      destEntryFee,
+      destImage;
+  num subTotal
+  ;
   int  selectedCount;
   num totalAmount;
    PaymentScreen({super.key,
@@ -18,8 +21,9 @@ class PaymentScreen extends StatelessWidget {
      required this.destName,
      required this.destPlace,
      required this.destDistrict,
-     required this.destFee,
+     required this.destEntryFee,
      required this.destImage,
+     required this.subTotal,
      required this.selectedCount,
      required this.totalAmount
    });
@@ -75,7 +79,7 @@ class PaymentScreen extends StatelessWidget {
 
           InkWell(
             onTap: () {
-              showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destFee, selectedCount, totalAmount);
+              showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destEntryFee, selectedCount, totalAmount,subTotal);
             },
 
             child: Container(
@@ -97,7 +101,8 @@ class PaymentScreen extends StatelessWidget {
           SizedBox(height: 10,),
           InkWell(
             onTap: () {
-              showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destFee, selectedCount, totalAmount);
+              showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destEntryFee, selectedCount, totalAmount, subTotal);
+              // showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destFee, selectedCount, totalAmount);
               // showPaymentConfirmation(context, "userId", "destId");
             },
             child: Container(

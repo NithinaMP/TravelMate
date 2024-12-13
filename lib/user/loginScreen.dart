@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/constants/constant_colors.dart';
 import 'package:travelmate/provider/loginProvider.dart';
 import 'package:travelmate/user/signupScreen.dart';
@@ -129,10 +130,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         // Text on top of blurred container
                         Consumer<LoginProvider>(
-                          builder: (context,value,child) {
+                          builder: (context1,value,child) {
                             return GestureDetector(
                               onTap: () {
-                                value.userAuthorized(context, phoneController.text, passwordController.text);
+                                value.userAuthorized(context1, phoneController.text, passwordController.text);
                                 // Navigator.push(
                                 //     context,
                                 //     MaterialPageRoute(
@@ -179,11 +180,12 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RegisterScreen(),
-                                ));
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => RegisterScreen(),
+                            //     ));
+                            callNext(context, RegisterScreen());
                           },
                           child: Text(
                             " Sign up",
