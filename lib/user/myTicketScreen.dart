@@ -73,7 +73,7 @@ class MyTicketScreen extends StatelessWidget {
 
                       // If there are no tickets, show a placeholder
                       if (dValue.destTicketList.isEmpty) {
-                        return Center(child: Text("No ticket available"));
+                        return Center(child: Text("No ticket available",style: TextStyle(color: Colors.white),));
                       }
 
                       // If tickets are available, display them
@@ -107,23 +107,38 @@ class MyTicketScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 10),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: 3, // Adjust based on your data source
-                    itemBuilder: (context, index) {
-                      return buildTicketCard(
-                        context,
-                        height,
-                        width,
-                        admingradient,
-                        "assets/image/camp_munnar.jpeg", // Event image
-                        "Destination Main Title $index",
-                        "Location Details LIKE Suryanelli city, Munnar, Idukki",
-                        "Ticket No: DST23RT61${10 + index}",
-                        null, // No ticket data for events
+                  Consumer<MainProvider>(
+                    builder: (context,eValue,child) {
+                      // If loading, show a loading indicator
+                      if (eValue.isLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      // If there are no tickets, show a placeholder
+                      if (eValue.eventTicketList.isEmpty) {
+                        return Center(child: Text("No ticket available",style: TextStyle(color: Colors.white),));
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: eValue.eventTicketList.length, // Adjust based on your data source
+                        itemBuilder: (context, index) {
+                          var eTicket=eValue.eventTicketList[index];
+                          return buildTicketCard(
+                            context,
+                            height,
+                            width,
+                            admingradient,
+                            eTicket.eventImage, // Event image
+                            eTicket.eventName,
+                            "${eTicket.eventPlace},${eTicket.eventDistrict}",
+                            "Ticket No: ${eTicket.bookingId}",
+                            eTicket
+                            // null, // No ticket data for events
+                          );
+                        },
                       );
-                    },
+                    }
                   ),
                 ],
               ),

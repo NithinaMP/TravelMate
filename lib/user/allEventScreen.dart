@@ -8,7 +8,8 @@ import '../provider/mainProvider.dart';
 import 'EventDetail.dart';
 
 class AllEventScreen extends StatelessWidget {
-  const AllEventScreen({super.key});
+  String userId;
+  AllEventScreen({super.key,required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +100,7 @@ class AllEventScreen extends StatelessWidget {
                                   var event=dValue.eventList[index];
                                   return GestureDetector(
                                     onTap: () {
-                                     callNext(context, EventDetailWidget(eventDetails: event,));
+                                     callNext(context, EventDetailScreen(eventDetails: event, userId: userId,));
                                      // callNext(context, eventDetailWidget(eventDetails: event,));
                                     },
                                     child: Padding(

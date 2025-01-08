@@ -11,22 +11,28 @@ class PaymentScreen extends StatelessWidget {
       destDistrict,
       destEntryFee,
       destImage;
-  num subTotal
-  ;
-  int  selectedCount;
+
+  num subTotal;
+  int selectedCount;
   num totalAmount;
-   PaymentScreen({super.key,
-     required this.userId,
-     required this.destId,
-     required this.destName,
-     required this.destPlace,
-     required this.destDistrict,
-     required this.destEntryFee,
-     required this.destImage,
-     required this.subTotal,
-     required this.selectedCount,
-     required this.totalAmount
-   });
+  String from;
+  String eventDate;//Add eventDate parameter
+
+  PaymentScreen({
+    super.key,
+    required this.userId,
+    required this.destId,
+    required this.destName,
+    required this.destPlace,
+    required this.destDistrict,
+    required this.destEntryFee,
+    required this.destImage,
+    required this.subTotal,
+    required this.selectedCount,
+    required this.totalAmount,
+    required this.from,
+    required this.eventDate,///initialize eventdate
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,93 +52,150 @@ class PaymentScreen extends StatelessWidget {
           ),
         ),
       ),
-      backgroundColor: Color(0xfff8f8f1  ),
+      backgroundColor: Color(0xfff8f8f1),
       body: Column(
         children: [
           ClipPath(
-            clipper: ZigZagClipper(),  // Apply the custom zigzag clip
+            clipper: ZigZagClipper(), // Apply the custom zigzag clip
             child: Container(
-              width: double.infinity,  // Make the container full width
-              height:height/10,             // Set the height of the container
+              width: double.infinity, // Make the container full width
+              height: height / 10, // Set the height of the container
               decoration: BoxDecoration(
-                  color: Color(0xffeef1b9
-              ),
-
+                color: Color(0xffeef1b9),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                   children: [
                     Text("Amount Payable"),
                     Text("₹${totalAmount}"),
-
                   ],
                 ),
-              ),// Container color
+              ), // Container color
             ),
           ),
-          SizedBox(height: 20,),
-          Text("PAYMENT OPTIONS",style: TextStyle(color: Colors.black),),
-          SizedBox(height: 20,),
-
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            "PAYMENT OPTIONS",
+            style: TextStyle(color: Colors.black),
+          ),
+          SizedBox(
+            height: 20,
+          ),
           InkWell(
             onTap: () {
-              showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destEntryFee, selectedCount, totalAmount,subTotal);
-            },
 
+              showPaymentConfirmation(
+                  context,
+                  userId,
+                  destId,
+                  destName,
+                  destDistrict,
+                  destPlace,
+                  destImage,
+                  destEntryFee,
+                  selectedCount,
+                  totalAmount,
+                  subTotal,
+                from,
+                eventDate: eventDate
+                // "Event"
+              );
+              print("Selected Destination or event  date :$eventDate");
+            },
             child: Container(
-              height: height/10,
+              height: height / 10,
               width: width,
               decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.symmetric(horizontal: BorderSide(color: Colors.grey.shade300))
-              ),
-              child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  color: Colors.white,
+                  border: Border.symmetric(
+                      horizontal: BorderSide(color: Colors.grey.shade300))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Image.asset("assets/image/gpay.png",scale: 14,),
-                  Text("Google Pay",style: TextStyle(fontSize: 16),),
+                  Image.asset(
+                    "assets/image/gpay.png",
+                    scale: 14,
+                  ),
+                  Text(
+                    "Google Pay",
+                    style: TextStyle(fontSize: 16),
+                  ),
                   Icon(Icons.arrow_drop_down_outlined)
                 ],
               ),
             ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           InkWell(
             onTap: () {
-              showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destEntryFee, selectedCount, totalAmount, subTotal);
-              // showPaymentConfirmation(context, userId, destId, destName, destDistrict, destPlace, destImage, destFee, selectedCount, totalAmount);
-              // showPaymentConfirmation(context, "userId", "destId");
+              String eventDate="2024-12-20";
+              showPaymentConfirmation(
+                  context,
+                  userId,
+                  destId,
+                  destName,
+                  destDistrict,
+                  destPlace,
+                  destImage,
+                  destEntryFee,
+                  selectedCount,
+                  totalAmount,
+                  subTotal,
+                from,
+                eventDate: eventDate
+                // "Event"
+              );
             },
             child: Container(
-              height: height/10,
+              height: height / 10,
               width: width,
               decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.symmetric(horizontal: BorderSide(color: Colors.grey.shade300))
-              ),
-              child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  color: Colors.white,
+                  border: Border.symmetric(
+                      horizontal: BorderSide(color: Colors.grey.shade300))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Image.asset("assets/image/Paytm_logo.jpg",scale: 10,),
-                  Text("Paytm",style: TextStyle(fontSize: 16),),
+                  Image.asset(
+                    "assets/image/Paytm_logo.jpg",
+                    scale: 10,
+                  ),
+                  Text(
+                    "Paytm",
+                    style: TextStyle(fontSize: 16),
+                  ),
                   Icon(Icons.arrow_drop_down_outlined)
                 ],
               ),
             ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Container(
-            height: height/10,
+            height: height / 10,
             width: width,
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.symmetric(horizontal: BorderSide(color: Colors.grey.shade300))
-            ),
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                color: Colors.white,
+                border: Border.symmetric(
+                    horizontal: BorderSide(color: Colors.grey.shade300))),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Image.asset("assets/image/bpi.png",scale: 4,),
-                Text("Bhim",style: TextStyle(fontSize: 16),),
+                Image.asset(
+                  "assets/image/bpi.png",
+                  scale: 4,
+                ),
+                Text(
+                  "Bhim",
+                  style: TextStyle(fontSize: 16),
+                ),
                 Icon(Icons.arrow_drop_down_outlined)
               ],
             ),
@@ -146,11 +209,11 @@ class PaymentScreen extends StatelessWidget {
 class ZigZagClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    double zigzagHeight = 10.0;  // Height of each zigzag
-    double zigzagWidth = 20.0;   // Width of each zigzag
+    double zigzagHeight = 10.0; // Height of each zigzag
+    double zigzagWidth = 20.0; // Width of each zigzag
 
     final Path path = Path();
-    path.moveTo(0, 0);  // Start at the top-left corner
+    path.moveTo(0, 0); // Start at the top-left corner
 
     // Draw the top straight line
     path.lineTo(size.width, 0); // Top-right corner
@@ -160,14 +223,15 @@ class ZigZagClipper extends CustomClipper<Path> {
 
     // Create the zigzag pattern
     for (double x = size.width; x > 0; x -= zigzagWidth) {
-      path.lineTo(x - zigzagWidth / 2, size.height);  // Peak of the zigzag
-      path.lineTo(x - zigzagWidth, size.height - zigzagHeight);  // Bottom of the zigzag
+      path.lineTo(x - zigzagWidth / 2, size.height); // Peak of the zigzag
+      path.lineTo(
+          x - zigzagWidth, size.height - zigzagHeight); // Bottom of the zigzag
     }
 
     // Finish the zigzag pattern
     path.lineTo(0, size.height - zigzagHeight); // Left side of the last zigzag
-    path.lineTo(0, 0);  // Back to the top-left corner
-    path.close();  // Close the path to complete the shape
+    path.lineTo(0, 0); // Back to the top-left corner
+    path.close(); // Close the path to complete the shape
 
     return path;
   }
@@ -175,6 +239,3 @@ class ZigZagClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
-
-
-

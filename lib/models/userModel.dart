@@ -25,6 +25,33 @@ class DestTicketModel{
       );
 }
 
+class EventTicketModel{
+  String bookingId;
+  String eventName;
+  String eventPlace;
+  String eventDistrict;
+  String eventDate;
+  int totalMembers;
+  num unitPrice;
+  num subTotal;
+  // num gst;
+  num totalAmount;
+  String eventImage;
+  EventTicketModel(
+      this.bookingId,
+      this.eventName,
+      this.eventPlace,
+      this.eventDistrict,
+      this.eventDate,
+      this.totalMembers,
+      this.unitPrice,
+      this.subTotal,
+      // this.gst,
+      this.totalAmount,
+      this.eventImage
+      );
+}
+
 class UserModel{
   String uid;
   String uname;

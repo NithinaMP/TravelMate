@@ -69,3 +69,5 @@ const LinearGradient admingradientone=LinearGradient(colors: [
     end: Alignment.bottomCenter,
 
 );
+
+const cstRed=Color(0xff8F0000);

@@ -236,7 +236,7 @@ class _UserHomePageState extends State<UserHomePage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                callNext(context, AllEventScreen());
+                                callNext(context, AllEventScreen(userId: widget.userID,));
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 8.0,bottom: 10.0),
@@ -267,6 +267,7 @@ class _UserHomePageState extends State<UserHomePage> {
                                       child: Container(
                                         height: 150,
                                         decoration: BoxDecoration(
+                                          color: Colors.grey,
                                           borderRadius: BorderRadius.circular(15),
                                           image: DecorationImage(
                                             image: NetworkImage(carousel.eventImage),
@@ -324,9 +325,8 @@ class _UserHomePageState extends State<UserHomePage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => DestinationScreen(item: dest, userId: widget.userID,
-
-                                        ),
+                                        builder: (context) => DestinationScreen(item: dest, userId: widget.userID)
+                                        // builder: (context) => DestinationScreen(destDestails: dest, userId: widget.userID,  ),
                                       ),
                                     );
                                   },
@@ -338,7 +338,7 @@ class _UserHomePageState extends State<UserHomePage> {
                                           height: height / 4.5,
                                           width: width,
                                           decoration: BoxDecoration(
-                                            color: Colors.black,
+                                            color: Colors.grey,
                                             borderRadius: BorderRadius.circular(20),
                                             image: DecorationImage(
                                               image: NetworkImage(dest.destImage),
@@ -362,14 +362,19 @@ class _UserHomePageState extends State<UserHomePage> {
                                                 ),
                                                 Row(
                                             children: [
-                                              Icon(Icons.place_outlined,color: Colors.white,size: 20,),Text(
-                                                  dest.destPlace,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: "benne",
-                                                    fontSize: 14,
+                                              Icon(Icons.place_outlined,color: Colors.white,size: 20,),
+                                              Flexible(
+                                                child: Text(
+                                                    dest.destPlace,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "benne",
+                                                      fontSize: 14,
+                                                    ),
+                                                  overflow: TextOverflow.ellipsis,
                                                   ),
-                                                ),
+
+                                              ),
                                               ],
                                             ),
                                          ] ),

@@ -31,8 +31,9 @@ class EventsModel{
   String eventDistrict;
   String eventImage;
   String eventDescription;
-  String eventEntryFee;
+  num eventEntryFee;
   String eventSlotAvailability;
+  String eventDate;
   EventsModel(
       this.eventId,
       this.eventName,
@@ -41,6 +42,7 @@ class EventsModel{
       this.eventImage,
       this.eventDescription,
       this.eventEntryFee,
-      this.eventSlotAvailability
+      this.eventSlotAvailability,
+      this.eventDate
       );
 }

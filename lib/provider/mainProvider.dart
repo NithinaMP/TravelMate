@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelmate/constants/constant_colors.dart';
 import 'package:travelmate/constants/globalMethods.dart';
@@ -245,6 +246,16 @@ class MainProvider extends ChangeNotifier {
   TextEditingController eventDistrictController = TextEditingController();
   TextEditingController eventDiscriptionController = TextEditingController();
   TextEditingController eventEntryFeeController = TextEditingController();
+  // TextEditingController eventDateController = TextEditingController();
+
+  DateTime? _selectedEventDate;
+
+  DateTime? get selectedEventDate => _selectedEventDate;
+
+  void updateEventDate(DateTime date) {
+    _selectedEventDate = date;
+    notifyListeners();
+  }
 
   File? addEventFileImg;
   String eventFileUrl = "";
@@ -313,6 +324,14 @@ class MainProvider extends ChangeNotifier {
     }
   }
 
+  // ----------------------------------------------------
+  DateTime? eventSelectedDate;
+
+  void updateEventSelectedDate(DateTime date) {
+    eventSelectedDate = date;
+    notifyListeners();
+  }
+
   Future<void> addEvent(BuildContext context, String from, String oldId) async {
     print("adddfunction");
 
@@ -328,6 +347,7 @@ class MainProvider extends ChangeNotifier {
     addEvent["EVENT_SLOT_AVAILABILITY"] =
     _isSwitched ? "Available" : "Not Available";
     addEvent["EVENT_ENTRY_FEE"] = eventEntryFeeController.text;
+    addEvent["EVENT_DATE"] = eventSelectedDate??DateTime.now();
 
     print("$addEvent");
     //check if there s an image file selected
@@ -383,18 +403,29 @@ class MainProvider extends ChangeNotifier {
     addEventFileImg = null;
     eventFileUrl = "";
     _isSwitched = false;
+    eventSelectedDate=null;
     notifyListeners();
   }
 
   List<EventsModel> eventList = [];
 
   void getEvent() {
+
     db.collection("EVENT").get().then(
           (value) {
         if (value.docs.isNotEmpty) {
           eventList.clear();
           for (var element in value.docs) {
             Map<String, dynamic> event = element.data();
+
+            //handle Timestamp conversion for event_date
+            String eventDate="";
+            if(event["EVENT_DATE"] is Timestamp){
+              eventDate=(event["EVENT_DATE"] as Timestamp).toDate().toString();
+            }
+            else if(event["EVENT_DATE"] is String){
+              eventDate=event["EVENT_DATE"];
+            }
             eventList.add(EventsModel(
                 element.id,
                 event["EVENT_NAME"] ?? "",
@@ -402,8 +433,11 @@ class MainProvider extends ChangeNotifier {
                 event["EVENT_DISTRICT"] ?? "",
                 event["EVENT_IMAGE"] ?? "",
                 event["EVENT_DISCRIPTION"] ?? "",
-                event["EVENT_ENTRY_FEE"] ?? "",
-                event["EVENT_SLOT_AVAILABILITY"] ?? ""));
+                // num.parse(event["EVENT_ENTRY_FEE"] ?? ""),
+                num.tryParse(event["EVENT_ENTRY_FEE"].toString()) ?? 0,
+                event["EVENT_SLOT_AVAILABILITY"] ?? "",
+                eventDate)
+            );
             // print("$event");
           }
         }
@@ -411,6 +445,50 @@ class MainProvider extends ChangeNotifier {
       },
     );
   }
+  // void getEvent() {
+  //   db.collection("EVENT").get().then(
+  //         (value) {
+  //       if (value.docs.isNotEmpty) {
+  //         eventList.clear();
+  //         value.docs.forEach((element) {
+  //           try {
+  //             Map<String, dynamic> event = element.data();
+  //
+  //             // Handle Timestamp conversion for EVENT_DATE
+  //             String eventDate = "";
+  //             if (event["EVENT_DATE"] is Timestamp) {
+  //               eventDate = (event["EVENT_DATE"] as Timestamp).toDate().toString();
+  //             } else if (event["EVENT_DATE"] is String) {
+  //               eventDate = event["EVENT_DATE"];
+  //             }
+  //
+  //             // Add event to the list
+  //             eventList.add(EventsModel(
+  //               element.id,
+  //               event["EVENT_NAME"] ?? "",
+  //               event["EVENT_PLACE"] ?? "",
+  //               event["EVENT_DISTRICT"] ?? "",
+  //               event["EVENT_IMAGE"] ?? "",
+  //               event["EVENT_DISCRIPTION"] ?? "",
+  //               num.tryParse(event["EVENT_ENTRY_FEE"]?.toString() ?? "") ?? 0,
+  //               event["EVENT_SLOT_AVAILABILITY"] ?? "",
+  //               eventDate,
+  //             ));
+  //           } catch (e) {
+  //             // Log error details for debugging
+  //             print("Error processing event: ${element.id}, Error: $e");
+  //           }
+  //         });
+  //
+  //         // Notify listeners about changes
+  //         notifyListeners();
+  //       }
+  //     },
+  //   ).catchError((error) {
+  //     // Handle Firestore fetch errors
+  //     print("Error fetching events: $error");
+  //   });
+  // }
 
   void deleteEvent(String eventId, BuildContext context) {
     print("deleteeee");
@@ -433,6 +511,15 @@ class MainProvider extends ChangeNotifier {
               editEvent["EVENT_DISCRIPTION"].toString() ?? "";
           eventEntryFeeController.text =
               editEvent["EVENT_ENTRY_FEE"].toString() ?? "";
+
+
+          if(editEvent["EVENT_DATE"]!=null){
+            eventSelectedDate=(editEvent["EVENT_DATE"] as Timestamp).toDate();
+          }
+          else{
+            eventSelectedDate=null;///set to null if no date is available
+          }
+          notifyListeners();
         }
       },
     );
@@ -518,21 +605,9 @@ class MainProvider extends ChangeNotifier {
     );
   }
 
-// ---------------------------------------------------------------------------------------------
-  TextEditingController slotController = TextEditingController();
 
-  void addSlot() {
-    String id = DateTime
-        .now()
-        .microsecondsSinceEpoch
-        .toString();
-    Map<String, dynamic> det = HashMap();
-    det["DESIGNATION"] = slotController.text;
-    db.collection("Slot").doc(id).set(det);
-    notifyListeners();
-  }
 
-//   // ------------------------------------------Make ticket booking----------------------------------------------------------------------------------
+//   // ------------------------------------------DESTINATION Make ticket booking----------------------------------------------------------------------------------
 
   //for selecte the date from calnder.
 
@@ -589,7 +664,8 @@ class MainProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void destinationBooking(String userId,
+  void destinationBooking(
+      String userId,
       String destId,
       String destName,
       String destDistrict,
@@ -605,20 +681,20 @@ class MainProvider extends ChangeNotifier {
       return;
     }
 
+    String formattedDate=DateFormat("EEEE,MMMM,dd,yyyy").format(selectedDate!);
+
     // Check if selectedDate is null. If it is, we cannot proceed without a date
     if (selectedDate == null) {
       print("Invalid date selected");
       return;
     }
-    String booikngID = DateTime
-        .now()
-        .microsecondsSinceEpoch
-        .toString();
+    String booikngID = DateTime.now().microsecondsSinceEpoch.toString();
     print("Booking details:");
-    print(
-        "User ID:$userId,Destination Id: $destId,Selected date :$selectedDate");
+    print( "User ID:$userId,Destination Id: $destId,Selected date :$selectedDate");
     print("navigate to destination booking");
-    HashMap<String, dynamic> destTicket = HashMap();
+
+
+    Map<String, dynamic> destTicket = Map();
     destTicket["BOOKING_ID"] = booikngID;
     destTicket["DEST_ID"] = destId;
     destTicket["DEST_NAME"] = destName;
@@ -629,13 +705,14 @@ class MainProvider extends ChangeNotifier {
     destTicket["TOTAL_TICKET"] = totalTickets;
     destTicket["SUB_TOTAL"] = subTotal;
     destTicket["TOTAL_PRICE"] = totalAmount;
-    destTicket["DATE"] = selectedDate;
+    destTicket["DATE"] = DateFormat("EEEE,MMMM,dd,yyyy").format(selectedDate!);
+
+    print("Fetched destination date :$selectedDate");
+
+    //save booking to firestore
     try {
-      await db
-          .collection("USERS")
-          .doc(userId)
-          .collection("DEST_TICKET")
-          .doc(booikngID)
+      await db .collection("USERS").doc(userId)
+          .collection("DEST_TICKET") .doc(booikngID)
           .set(destTicket);
       print("userid: $userId");
 
@@ -644,11 +721,127 @@ class MainProvider extends ChangeNotifier {
       destResetBooking();
 
       getDestReceipt(userId);
+
     } catch (error) {
       print("Failed to add booking : $error");
     }
     notifyListeners();
   }
+ // //for selecte the date from calnder.
+ //
+ //  DateTime? _selectedDate;
+ //
+ //  DateTime? get selectedDate => _selectedDate;
+ //
+ //  void setSelectedDate(DateTime date) {
+ //    _selectedDate = date;
+ //    notifyListeners();
+ //  }
+ //
+ //  int selectedIndex = -1;
+ //  String destFee = '0'; // Default fee, which will be updated dynamically
+ //
+ //  // Method to select a member count
+ //  void selectIndex(int index) {
+ //    selectedIndex = index;
+ //    notifyListeners(); // Notify listeners to rebuild the UI
+ //  }
+ //
+ //  // Method to get selected count number
+ //  int get selectedCount =>
+ //      selectedIndex + 1; // Because index starts from 0, but count starts from 1
+ //
+ //  // Method to set the destination fee after fetching from Firestore
+ //  void setDestFee(String fee) {
+ //    destFee = fee;
+ //    notifyListeners(); // Notify listeners when fee is updated
+ //  }
+ //
+ //  // Method to get the total fee
+ //  double get totalFee {
+ //    double entryFee = double.tryParse(destFee) ?? 0.0;
+ //    return selectedCount * entryFee;
+ //  }
+ //
+ //  // Method to get GST (assuming GST is 2%)
+ //  double get gst {
+ //    return totalFee * 0.02; // 2% GST
+ //  }
+ //
+ //  // Method to get the final total amount
+ //  double get totalAmount {
+ //    return totalFee + gst;
+ //  }
+ //
+ //  //for reseting ticket booing
+ //
+ //  void destResetBooking() {
+ //    _selectedDate = null;
+ //    selectedIndex = -1;
+ //    destFee = '0';
+ //    notifyListeners();
+ //  }
+ //
+ //  void destinationBooking(String userId,
+ //      String destId,
+ //      String destName,
+ //      String destDistrict,
+ //      String destPlace,
+ //      String destEntryFee,
+ //      num totalTickets,
+ //      num totalAmount,
+ //      num subTotal,
+ //      String destImage,) async {
+ //    // Check if the userId is empty. If it is, we cannot proceed with the booking
+ //    if (userId.isEmpty) {
+ //      print("User id is missing");
+ //      return;
+ //    }
+ //
+ //    // Check if selectedDate is null. If it is, we cannot proceed without a date
+ //    if (selectedDate == null) {
+ //      print("Invalid date selected");
+ //      return;
+ //    }
+ //    String booikngID = DateTime
+ //        .now()
+ //        .microsecondsSinceEpoch
+ //        .toString();
+ //    print("Booking details:");
+ //    print(
+ //        "User ID:$userId,Destination Id: $destId,Selected date :$selectedDate");
+ //    print("navigate to destination booking");
+ //    HashMap<String, dynamic> destTicket = HashMap();
+ //    destTicket["BOOKING_ID"] = booikngID;
+ //    destTicket["DEST_ID"] = destId;
+ //    destTicket["DEST_NAME"] = destName;
+ //    destTicket["DEST_DISTRICT"] = destDistrict;
+ //    destTicket["DEST_ENTRY_FEE"] = destEntryFee;
+ //    destTicket["DEST_IMAGE"] = destImage;
+ //    destTicket["DEST_PLACE"] = destPlace;
+ //    destTicket["TOTAL_TICKET"] = totalTickets;
+ //    destTicket["SUB_TOTAL"] = subTotal;
+ //    destTicket["TOTAL_PRICE"] = totalAmount;
+ //    destTicket["DATE"] = selectedDate;
+ //    try {
+ //      await db
+ //          .collection("USERS")
+ //          .doc(userId)
+ //          .collection("DEST_TICKET")
+ //          .doc(booikngID)
+ //          .set(destTicket);
+ //      print("userid: $userId");
+ //
+ //      print("Booking added successfully");
+ //
+ //      destResetBooking();
+ //
+ //      getDestReceipt(userId);
+ //    } catch (error) {
+ //      print("Failed to add booking : $error");
+ //    }
+ //    notifyListeners();
+ //  }
 
 
   // ----------------------------GET DESTINATION TICKET----------------------------------
@@ -700,7 +893,171 @@ class MainProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // -----------------------------------------GET EVENT----------------------------------
+
+  // -----------------------------------------GET EVENT Ticket----------------------------------
+
+  int selectedEventIndex = -1;
+  String eventFee = '0'; // Default fee, which will be updated dynamically
+
+// Method to select a member count
+  void selectEventIndex(int index) {
+    selectedEventIndex = index;
+    notifyListeners(); // Notify listeners to rebuild the UI
+  }
+
+// Method to get selected count number
+  int get selectedEventCount =>
+      selectedEventIndex + 1; // Because index starts from 0, but count starts from 1
+
+// Method to set the destination fee after fetching from Firestore
+  void setEventFee(String fee) {
+    eventFee = fee;
+    notifyListeners(); // Notify listeners when fee is updated
+  }
+
+// Method to get the total fee
+  double get totalEventFee {
+    double entryFee = double.tryParse(eventFee) ?? 0.0;
+    return selectedEventCount * entryFee;
+  }
+
+// // Method to get GST (assuming GST is 2%)
+//   double get gst {
+//     return totalFee * 0.02; // 2% GST
+//   }
+
+// Method to get the final total amount
+  double get totalEventAmount {
+    return totalFee + gst;
+  }
+
+//for reseting ticket booing
+
+  void eventResetBooking() {
+    _selectedDate = null;
+    selectedEventIndex = -1;
+    eventFee = '0';
+    notifyListeners();
+  }
+
+
+
+// -----------------------------------------------------------
+
+  void eventBooking(
+      String userId,
+      String eventId,
+      String eventName,
+      String eventDistrict,
+      String eventPlace,
+      String eventEntryFee,
+      num totalTickets,
+      num totalAmount,
+      num subTotal,
+      String eventImage,
+      String eventDate
+      ) async {
+
+
+    print("Received event date in eventBooking : $eventDate");
+    // Check if the userId is empty. If it is, we cannot proceed with the booking
+    if (userId.isEmpty) {
+      print("User id is missing");
+      return;
+    }
+
+    if(userId.isEmpty||eventDate.isEmpty){
+      print("Error: user id or  Event date is missing or invalid");
+      return;
+    }
+
+
+    String booikngID = DateTime.now().microsecondsSinceEpoch.toString();
+    print(" Event Booking  details:");
+    print( "User ID:$userId,Destination Id: $eventId,Selected date :$selectedDate");
+    print("navigate to event booking");
+
+
+    Map<String, dynamic> eventTicket = Map();
+    eventTicket["BOOKING_ID"] = booikngID;
+    eventTicket["EVENT_ID"] = eventId;
+    eventTicket["EVENT_NAME"] = eventName;
+    eventTicket["EVENT_DISTRICT"] = eventDistrict;
+    eventTicket["EVENT_ENTRY_FEE"] = eventEntryFee;
+    eventTicket["EVENT_IMAGE"] = eventImage;
+    eventTicket["EVENT_PLACE"] = eventPlace;
+    eventTicket["TOTAL_TICKET"] = totalTickets;
+    eventTicket["SUB_TOTAL"] = subTotal;
+    eventTicket["TOTAL_PRICE"] = totalAmount;
+    eventTicket["DATE"] = eventDate;
+
+
+    //save booking to firestore
+    try {
+      await db .collection("USERS").doc(userId)
+          .collection("EVENT_TICKET") .doc(booikngID)
+          .set(eventTicket);
+      print("userid: $userId");
+
+      print("Booking added successfully");
+
+      destResetBooking();
+
+
+
+    } catch (error) {
+      print("Failed to add booking : $error");
+    }
+    notifyListeners();
+  }
+
+/// get event ticket------------------------------------------------------------------
+
+
+
+  List<EventTicketModel> eventTicketList=[];
+  Future<void> getEventReceipt(String userId) async {
+    isLoading = true; // Indicate loading starts
+    notifyListeners();
+
+    try {
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection("USERS")
+          .doc(userId)
+          .collection("EVENT_TICKET")
+          .orderBy("DATE", descending: true) // Order by date
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        eventTicketList = querySnapshot.docs.map((doc) {
+          Map<String, dynamic> ticket = doc.data() as Map<String, dynamic>;
+          String travelDate = ticket["DATE"] is Timestamp
+              ? (ticket["DATE"] as Timestamp).toDate().toString()
+              : ticket["DATE"] ?? "";
+
+          return EventTicketModel(
+            doc.id,
+            ticket["EVENT_NAME"] ?? "",
+            ticket["EVENT_PLACE"] ?? "",
+            ticket["EVENT_DISTRICT"] ?? "",
+            travelDate,
+            int.tryParse(ticket["TOTAL_TICKET"].toString()) ?? 0,
+            num.tryParse(ticket["EVENT_ENTRY_FEE"]?.toString() ?? '0') ?? 0.0,
+            num.tryParse(ticket["SUB_TOTAL"]?.toString() ?? '0') ?? 0.0,
+            num.tryParse(ticket["TOTAL_PRICE"]?.toString() ?? '0') ?? 0.0,
+            ticket["EVENT_IMAGE"]??"",
+          );
+        }).toList();
+      } else {
+        eventTicketList.clear(); // Clear list if no bookings found
+      }
+    } catch (error) {
+      print("Error fetching tickets: $error");
+    }
+
+    isLoading = false; // Indicate loading ends
+    notifyListeners();
+  }
 
 
 

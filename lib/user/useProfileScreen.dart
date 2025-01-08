@@ -140,6 +140,7 @@ class ProfileScreen extends StatelessWidget {
                                       trailing: Icon(Icons.arrow_forward_ios_sharp,size: 20,color: Colors.white,),
                                       onTap: () {
                                         tValue.getDestReceipt(userId);
+                                        tValue.getEventReceipt(userId);
                                         callNext(context, MyTicketScreen(userId: userId,));
                                       },
                                     )

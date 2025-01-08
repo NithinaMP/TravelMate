@@ -16,7 +16,8 @@ import 'homeScreen.dart';
 
  class PaymentProgressScreen extends StatefulWidget {
   final String userId;
-  PaymentProgressScreen({required this.userId});
+  final String from;
+  PaymentProgressScreen({required this.userId,required this.from});
 
   @override
   _PaymentProgressScreenState createState() => _PaymentProgressScreenState();
@@ -38,7 +39,7 @@ class _PaymentProgressScreenState extends State<PaymentProgressScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => PaymentSuccess(userId: widget.userId),
+          builder: (context) => PaymentSuccess(userId: widget.userId, from: widget.from,),
         ),
       );
     }
@@ -57,7 +58,8 @@ class _PaymentProgressScreenState extends State<PaymentProgressScreen> {
 
 class PaymentSuccess extends StatelessWidget {
   final String userId;
-  PaymentSuccess({super.key, required this.userId});
+  final String from;
+  PaymentSuccess({super.key, required this.userId,required this.from});
 
   @override
   Widget build(BuildContext context) {
@@ -100,9 +102,11 @@ class PaymentSuccess extends StatelessWidget {
                         backgroundColor: Colors.yellow.shade700,
                       ),
                       onPressed: () async {
+                        print("Navigate to the ticket");
                         // Fetch the latest receipt data
                         await tkValue.getDestReceipt(userId);
-                        callNext(context, ReceiptScreen());
+                        await tkValue.getEventReceipt(userId);
+                        callNext(context, ReceiptScreen(from: from,));
 
                         // // After data is fetched, navigate to the ReceiptScreen
                         // if (tkValue.destTicketList.isNotEmpty) {

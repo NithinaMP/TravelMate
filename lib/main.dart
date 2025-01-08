@@ -14,6 +14,7 @@ import 'package:travelmate/user/getStartedScreen.dart';
 import 'package:travelmate/user/homeScreen.dart';
 import 'package:travelmate/user/loginScreen.dart';
 import 'package:travelmate/user/myTicketScreen.dart';
+import 'package:travelmate/user/receiptScreen.dart';
 import 'package:travelmate/user/review.dart';
 import 'package:travelmate/user/signupScreen.dart';
 import 'package:travelmate/user/splashScreen.dart';
@@ -21,6 +22,7 @@ import 'package:travelmate/user/userBottomScreen.dart';
 import 'package:travelmate/user/wishListScreen.dart';
 
 import 'admin/adminHomescreen.dart';
+import 'admin/sample1.dart';
 
 Future <void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +30,7 @@ Future <void> main() async{
     options: FirebaseOptions(
         apiKey: "AIzaSyA2dXpTSL0zsnNWU8LYaA2QGVlIqHXnmfg",
         appId: "1:133733818670:android:775458077e1dcd420bdabf",
-        messagingSenderId: "travelmate-44c92",
+        messagingSenderId: "133733818670",
         projectId: "travelmate-44c92",
       storageBucket: "travelmate-44c92.appspot.com"
     )
@@ -60,7 +62,7 @@ class MyApp extends StatelessWidget {
           )
         ),
 
-        // home: ReceiptScreen(),
+        // home: adminhomeWidget()
          home: SplashScreen(),
         //  home: UserBottomScreen(userId: '',),
 
