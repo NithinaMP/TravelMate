@@ -32,7 +32,12 @@ class _UserBottomScreenState extends State<UserBottomScreen> {
           return UserHomePage(userID: widget.userId,);
         }
       ),
-      WishlistScreen(),
+      Consumer<MainProvider>(
+        builder: (context,wishValue,child) {
+          wishValue.getFavorite(widget.userId);
+          return WishlistScreen();
+        }
+      ),
       ProfileScreen(userId: widget.userId,)
     ];
   }

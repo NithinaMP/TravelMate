@@ -240,12 +240,28 @@ class DestinationScreen extends StatelessWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          item.destName,
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              item.destName,
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                dValue.toggleFavorite(userId, item.destId, context);
+                                print("favourite button cliked");
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Icon(dValue.isLiked?Icons.favorite:Icons.favorite_border,color: dValue.isLiked?Colors.red:Colors.red,),
+                              ),
+                            ),
+
+                          ],
                         ),
                         SizedBox(height: 8),
                         Text(

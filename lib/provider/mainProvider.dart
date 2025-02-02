@@ -1059,6 +1059,94 @@ class MainProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  ///for favourite destination
 
+  bool isLiked=false;
+  void toggleFavorite(String userId, String destId, BuildContext context) {
+
+    // Toggle the like state and update the wishlist accordingly
+    isLiked = !isLiked;
+
+    // Get the user document
+    db.collection("USERS").doc(userId).get().then((value) {
+      if (value.exists) {
+        //get the current wishlist
+
+        List<dynamic> currentWishlist = value.data()?["WISHLIST"] ?? [];
+
+        if (currentWishlist.contains(destId)) {
+          // if the product is already in the wishlist, remove it
+          db.collection("USERS").doc(userId).update({
+            "WISHLIST": FieldValue.arrayRemove([destId])
+          });
+          // Remove from favourite_product field in the product collection
+
+          db.collection("DESTINATION").doc(destId).update({
+            "FAVOURITED_USER": FieldValue.arrayRemove([userId])
+          });
+          // logPro.favProductIdList.remove(productId);
+
+          // value.removeFromWishList(widget.item.productName);
+          const snackBar = SnackBar(content: Text("Removed from wishlist"));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        else {
+          // If the product is not in the wishlist, add it
+          db.collection("USERS").doc(userId).set({
+            "WISHLIST": FieldValue.arrayUnion([destId])
+          }, SetOptions(merge: true));
+
+          // Add the product to the FAVOURITED_PRODUCT field in the PRODUCT collection
+          db.collection("DESTINATION").doc(destId).set({
+            "FAVOURITED_USER": FieldValue.arrayUnion([userId])
+          }, SetOptions(merge: true));
+
+          // logPro.favProductIdList.add(productId);
+          const snackBar = SnackBar(content: Text("Added to wishlist"));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        // Add the product to the WISHLIST field in USERS collection
+
+
+        notifyListeners(); // Notify listeners after the changes
+      }
+    });
+  }
+
+    List<DestinationModel>wishList=[];
+
+  Future<void> getFavorite(String userId) async {
+    print("get product function started");
+    await db.collection("USERS").doc(userId).get().then((value) async {
+      if (value.exists) {
+        wishList.clear();
+        Map<dynamic, dynamic>wishMap = value.data() as Map;
+        List<dynamic> fav = wishMap["WISHLIST"] ?? [];
+        for (var ele in fav) {
+          String proId = ele.toString();
+          await db.collection("DESTINATION").doc(proId).get().then((value) {
+            if (value.exists) {
+              Map<dynamic, dynamic>map = value.data() as Map;
+              wishList.add(DestinationModel(
+                  value.id,
+                  map["DEST_NAME"].toString()??"",
+                  map["DEST_PLACE"].toString()??"",
+                  map["DEST_DISTRICT"].toString()??"",
+                  map["DEST_BEST_TIME"].toString()??"",
+                  map["DEST_IMAGE"].toString()??"",
+                  map["DEST_DISCRIPTION"].toString()??"",
+                  num.tryParse(map["DEST_ENTRY_FEE"].toString()) ?? 0,
+                 map["DEST_SLOT_AVAILABILITY"].toString()??""
+
+              )
+              );
+
+            }
+          },);
+        }
+        notifyListeners();
+      }
+    },);
+  }
 
 }
