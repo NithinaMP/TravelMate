@@ -5,8 +5,12 @@ import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/constants/constant_colors.dart';
 import 'package:travelmate/provider/loginProvider.dart';
 import 'package:travelmate/provider/mainProvider.dart';
+import 'package:travelmate/user/help&SupportScreen.dart';
 import 'package:travelmate/user/myTicketScreen.dart';
 import 'package:travelmate/user/profileEditScreen.dart';
+import 'package:travelmate/user/wishListScreen.dart';
+
+
 
 class ProfileScreen extends StatelessWidget {
   String userId;
@@ -53,11 +57,20 @@ class ProfileScreen extends StatelessWidget {
                   child: Consumer<LoginProvider>(
                     builder: (context,pValue,child) {
                       return CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 60,
-                        child: Icon(Icons.image_rounded),
-                        backgroundImage: NetworkImage(pValue.loginPhoto),
+                        radius: 50,
+                        backgroundImage: pValue.loginPhoto.isNotEmpty
+                            ? NetworkImage(pValue.loginPhoto)
+                            : null,
+                        child: pValue.loginPhoto.isEmpty
+                            ? Icon(Icons.person, size: 50)
+                            : null,
                       );
+                      //   CircleAvatar(
+                      //   backgroundColor: Colors.white,
+                      //   radius: 60,
+                      //   child: Icon(Icons.image_rounded),
+                      //   backgroundImage: NetworkImage(pValue.loginPhoto),
+                      // );
                     }
                   ),
                 ),
@@ -142,6 +155,7 @@ class ProfileScreen extends StatelessWidget {
                                         tValue.getDestReceipt(userId);
                                         tValue.getEventReceipt(userId);
                                         callNext(context, MyTicketScreen(userId: userId,));
+                                        print("Clicked to my ticket");
                                       },
                                     )
                                   ],
@@ -154,26 +168,65 @@ class ProfileScreen extends StatelessWidget {
 
                       Padding(
                         padding: const EdgeInsets.all(2.0),
-                        child: Container(
-                          height: hieght/8,
-                          width: width/1.05,
-                          decoration: BoxDecoration(gradient: admingradient,borderRadius: BorderRadius.circular(20)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  leading: Icon(Icons.favorite_outline,size: 32,color: Color(0xffD1A25f)),
-                                  title: Text("Wish List",style: TextStyle(fontFamily: "benne",fontSize: 18,color: Colors.white),),
-                                  subtitle: Text("Your favourite destinations and more",style: TextStyle(fontFamily: "baloo",fontSize: 12,color: Colors.grey),),
-                                  trailing: Icon(Icons.arrow_forward_ios_sharp,size: 20,color: Colors.white,),
-                                  onTap: () {},
-                                )
-                              ],
-                            ),
-                          ),
+                        child: Consumer<MainProvider>(
+                          builder: (context2,wishValue,child) {
+                            return Container(
+                              height: hieght/8,
+                              width: width/1.05,
+                              decoration: BoxDecoration(gradient: admingradient,borderRadius: BorderRadius.circular(20)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      leading: Icon(Icons.favorite_outline,size: 32,color: Color(0xffD1A25f)),
+                                      title: Text("Wish List",style: TextStyle(fontFamily: "benne",fontSize: 18,color: Colors.white),),
+                                      subtitle: Text("Your favourite destinations and more",style: TextStyle(fontFamily: "baloo",fontSize: 12,color: Colors.grey),),
+                                      trailing: Icon(Icons.arrow_forward_ios_sharp,size: 20,color: Colors.white,),
+                                      onTap: () {
+                                        wishValue.getFavorite(userId);
+                                        callNext(context, WishlistScreen());
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
                         ),
                       ),
+                      Consumer<MainProvider>(
+                          builder: (context1,sValue,child) {
+                            return Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Container(
+                                height: hieght/7,
+                                width: width/1.05,
+                                decoration: BoxDecoration(gradient: admingradient,borderRadius: BorderRadius.circular(20)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        leading: Icon(Icons.contact_support_outlined,size: 32,color: Color(0xffD1A25f)),
+                                        title: Text("Help & Support",style: TextStyle(fontFamily: "benne",fontSize: 18,color: Colors.white),),
+                                        subtitle: Text("Contact us for assistance",style: TextStyle(fontFamily: "baloo",fontSize: 12,color: Colors.grey),),
+                                        trailing: Icon(Icons.arrow_forward_ios_sharp,size: 20,color: Colors.white,),
+                                        onTap: () {
+                                          // HapticFeedback.lightImpact(); // Added haptic feedback
+                                          // sValue.launchPhoneDialer();
+                                          callNext(context, HelpSupportScreen());
+                                        },
+                                      )
+
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                      ),
+
 
                       Consumer<MainProvider>(
                         builder: (context1,logValue,child) {

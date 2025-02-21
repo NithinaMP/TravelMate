@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -664,6 +665,7 @@ class MainProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  ///new code for addin ticket in both collection
   void destinationBooking(
       String userId,
       String destId,
@@ -674,177 +676,62 @@ class MainProvider extends ChangeNotifier {
       num totalTickets,
       num totalAmount,
       num subTotal,
-      String destImage,) async {
-    // Check if the userId is empty. If it is, we cannot proceed with the booking
+      String destImage) async {
+
     if (userId.isEmpty) {
       print("User id is missing");
       return;
     }
 
-    String formattedDate=DateFormat("EEEE,MMMM,dd,yyyy").format(selectedDate!);
-
-    // Check if selectedDate is null. If it is, we cannot proceed without a date
     if (selectedDate == null) {
       print("Invalid date selected");
       return;
     }
-    String booikngID = DateTime.now().microsecondsSinceEpoch.toString();
+
+    String formattedDate = DateFormat("EEEE,MMMM,dd,yyyy").format(selectedDate!);
+    String bookingID = DateTime.now().microsecondsSinceEpoch.toString();
+
     print("Booking details:");
-    print( "User ID:$userId,Destination Id: $destId,Selected date :$selectedDate");
-    print("navigate to destination booking");
+    print("User ID: $userId, Destination ID: $destId, Selected date: $selectedDate");
+    print("Navigating to destination booking...");
 
+    Map<String, dynamic> bookingData = {
+      "BOOKING_ID": bookingID,
+      "USER_ID": userId,
+      "DEST_ID": destId,
+      "DEST_NAME": destName,
+      "DEST_DISTRICT": destDistrict,
+      "DEST_ENTRY_FEE": destEntryFee,
+      "DEST_IMAGE": destImage,
+      "DEST_PLACE": destPlace,
+      "TOTAL_TICKET": totalTickets,
+      "SUB_TOTAL": subTotal,
+      "TOTAL_PRICE": totalAmount,
+      "DATE": formattedDate,
+    };
 
-    Map<String, dynamic> destTicket = Map();
-    destTicket["BOOKING_ID"] = booikngID;
-    destTicket["DEST_ID"] = destId;
-    destTicket["DEST_NAME"] = destName;
-    destTicket["DEST_DISTRICT"] = destDistrict;
-    destTicket["DEST_ENTRY_FEE"] = destEntryFee;
-    destTicket["DEST_IMAGE"] = destImage;
-    destTicket["DEST_PLACE"] = destPlace;
-    destTicket["TOTAL_TICKET"] = totalTickets;
-    destTicket["SUB_TOTAL"] = subTotal;
-    destTicket["TOTAL_PRICE"] = totalAmount;
-    destTicket["DATE"] = DateFormat("EEEE,MMMM,dd,yyyy").format(selectedDate!);
-
-    print("Fetched destination date :$selectedDate");
-
-    //save booking to firestore
     try {
-      await db .collection("USERS").doc(userId)
-          .collection("DEST_TICKET") .doc(booikngID)
-          .set(destTicket);
-      print("userid: $userId");
+      // Save booking inside the user's DEST_TICKET collection
+      await db.collection("USERS").doc(userId)
+          .collection("DEST_TICKET").doc(bookingID)
+          .set(bookingData);
 
-      print("Booking added successfully");
+      // Save booking in the separate BOOKINGS collection
+      // await db.collection("BOOKINGS").doc(bookingID).collection("DEST_BOOKINGS").doc(destId).set(bookingData);
+      await db.collection("BOOKINGS").doc(bookingID).set(bookingData);
+      // ✅ 3️⃣ Save booking inside the event’s collection for counting
+      await db.collection("DESTINATION").doc(destId).collection("BOOKINGS").doc(bookingID).set(bookingData);
+
+      print("Booking added successfully to both USERS/DEST_TICKET and BOOKINGS collections.");
 
       destResetBooking();
-
       getDestReceipt(userId);
-
     } catch (error) {
-      print("Failed to add booking : $error");
+      print("Failed to add booking: $error");
     }
     notifyListeners();
   }
- // //for selecte the date from calnder.
- //
- //  DateTime? _selectedDate;
- //
- //  DateTime? get selectedDate => _selectedDate;
- //
- //  void setSelectedDate(DateTime date) {
- //    _selectedDate = date;
- //    notifyListeners();
- //  }
- //
- //  int selectedIndex = -1;
- //  String destFee = '0'; // Default fee, which will be updated dynamically
- //
- //  // Method to select a member count
- //  void selectIndex(int index) {
- //    selectedIndex = index;
- //    notifyListeners(); // Notify listeners to rebuild the UI
- //  }
- //
- //  // Method to get selected count number
- //  int get selectedCount =>
- //      selectedIndex + 1; // Because index starts from 0, but count starts from 1
- //
- //  // Method to set the destination fee after fetching from Firestore
- //  void setDestFee(String fee) {
- //    destFee = fee;
- //    notifyListeners(); // Notify listeners when fee is updated
- //  }
- //
- //  // Method to get the total fee
- //  double get totalFee {
- //    double entryFee = double.tryParse(destFee) ?? 0.0;
- //    return selectedCount * entryFee;
- //  }
- //
- //  // Method to get GST (assuming GST is 2%)
- //  double get gst {
- //    return totalFee * 0.02; // 2% GST
- //  }
- //
- //  // Method to get the final total amount
- //  double get totalAmount {
- //    return totalFee + gst;
- //  }
- //
- //  //for reseting ticket booing
- //
- //  void destResetBooking() {
- //    _selectedDate = null;
- //    selectedIndex = -1;
- //    destFee = '0';
- //    notifyListeners();
- //  }
- //
- //  void destinationBooking(String userId,
- //      String destId,
- //      String destName,
- //      String destDistrict,
- //      String destPlace,
- //      String destEntryFee,
- //      num totalTickets,
- //      num totalAmount,
- //      num subTotal,
- //      String destImage,) async {
- //    // Check if the userId is empty. If it is, we cannot proceed with the booking
- //    if (userId.isEmpty) {
- //      print("User id is missing");
- //      return;
- //    }
- //
- //    // Check if selectedDate is null. If it is, we cannot proceed without a date
- //    if (selectedDate == null) {
- //      print("Invalid date selected");
- //      return;
- //    }
- //    String booikngID = DateTime
- //        .now()
- //        .microsecondsSinceEpoch
- //        .toString();
- //    print("Booking details:");
- //    print(
- //        "User ID:$userId,Destination Id: $destId,Selected date :$selectedDate");
- //    print("navigate to destination booking");
- //    HashMap<String, dynamic> destTicket = HashMap();
- //    destTicket["BOOKING_ID"] = booikngID;
- //    destTicket["DEST_ID"] = destId;
- //    destTicket["DEST_NAME"] = destName;
- //    destTicket["DEST_DISTRICT"] = destDistrict;
- //    destTicket["DEST_ENTRY_FEE"] = destEntryFee;
- //    destTicket["DEST_IMAGE"] = destImage;
- //    destTicket["DEST_PLACE"] = destPlace;
- //    destTicket["TOTAL_TICKET"] = totalTickets;
- //    destTicket["SUB_TOTAL"] = subTotal;
- //    destTicket["TOTAL_PRICE"] = totalAmount;
- //    destTicket["DATE"] = selectedDate;
- //    try {
- //      await db
- //          .collection("USERS")
- //          .doc(userId)
- //          .collection("DEST_TICKET")
- //          .doc(booikngID)
- //          .set(destTicket);
- //      print("userid: $userId");
- //
- //      print("Booking added successfully");
- //
- //      destResetBooking();
- //
- //      getDestReceipt(userId);
- //    } catch (error) {
- //      print("Failed to add booking : $error");
- //    }
- //    notifyListeners();
- //  }
 
-
-  // ----------------------------GET DESTINATION TICKET----------------------------------
 
 
   List<DestTicketModel> destTicketList = [];
@@ -942,7 +829,7 @@ class MainProvider extends ChangeNotifier {
 
 
 
-// -----------------------------------------------------------
+
 
   void eventBooking(
       String userId,
@@ -955,31 +842,23 @@ class MainProvider extends ChangeNotifier {
       num totalAmount,
       num subTotal,
       String eventImage,
-      String eventDate
+      String eventDate, // Already in "Thursday, December, 26, 2024" format
       ) async {
+    print("Received event date in eventBooking: $eventDate");
 
-
-    print("Received event date in eventBooking : $eventDate");
-    // Check if the userId is empty. If it is, we cannot proceed with the booking
-    if (userId.isEmpty) {
-      print("User id is missing");
+    // Check if the userId or eventDate is empty
+    if (userId.isEmpty || eventDate.isEmpty) {
+      print("Error: user id or Event date is missing or invalid");
       return;
     }
 
-    if(userId.isEmpty||eventDate.isEmpty){
-      print("Error: user id or  Event date is missing or invalid");
-      return;
-    }
+    String bookingID = DateTime.now().microsecondsSinceEpoch.toString();
+    print("Event Booking details:");
+    print("User ID: $userId, Destination Id: $eventId, Selected date: $eventDate");
+    print("Navigate to event booking");
 
-
-    String booikngID = DateTime.now().microsecondsSinceEpoch.toString();
-    print(" Event Booking  details:");
-    print( "User ID:$userId,Destination Id: $eventId,Selected date :$selectedDate");
-    print("navigate to event booking");
-
-
-    Map<String, dynamic> eventTicket = Map();
-    eventTicket["BOOKING_ID"] = booikngID;
+    Map<String, dynamic> eventTicket = {};
+    eventTicket["BOOKING_ID"] = bookingID;
     eventTicket["EVENT_ID"] = eventId;
     eventTicket["EVENT_NAME"] = eventName;
     eventTicket["EVENT_DISTRICT"] = eventDistrict;
@@ -989,29 +868,35 @@ class MainProvider extends ChangeNotifier {
     eventTicket["TOTAL_TICKET"] = totalTickets;
     eventTicket["SUB_TOTAL"] = subTotal;
     eventTicket["TOTAL_PRICE"] = totalAmount;
-    eventTicket["DATE"] = eventDate;
+    eventTicket["DATE"] = eventDate; // Directly store the formatted date
 
-
-    //save booking to firestore
+    // Save booking to Firestore
     try {
-      await db .collection("USERS").doc(userId)
-          .collection("EVENT_TICKET") .doc(booikngID)
+      await db
+          .collection("USERS")
+          .doc(userId)
+          .collection("EVENT_TICKET")
+          .doc(bookingID)
           .set(eventTicket);
-      print("userid: $userId");
-
+      print("User ID: $userId");
+      // Save the same booking in a global BOOKINGS collection
+      // await db.collection("BOOKINGS").doc(bookingID).collection("EVENT_BOOKINGS").doc(eventId).set(eventTicket);
+      await db.collection("BOOKINGS").doc(bookingID).set(eventTicket);
       print("Booking added successfully");
+      // ✅ 3️⃣ Save booking inside the event’s collection for counting
+      await db.collection("EVENT").doc(eventId).collection("BOOKINGS").doc(bookingID).set(eventTicket);
 
       destResetBooking();
-
-
-
     } catch (error) {
-      print("Failed to add booking : $error");
+      print("Failed to add booking: $error");
     }
+
     notifyListeners();
   }
 
-/// get event ticket------------------------------------------------------------------
+
+
+  /// get event ticket------------------------------------------------------------------
 
 
 
@@ -1148,5 +1033,327 @@ class MainProvider extends ChangeNotifier {
       }
     },);
   }
+// carousel-------------------
+  int _activeIndex = 0;
 
+  int get activeIndex => _activeIndex;
+
+  void setActiveIndex(int index) {
+    _activeIndex = index;
+    notifyListeners(); // Notify listeners about the change
+  }
+
+
+
+  ///for homescreen destination serach
+  List<DestinationModel>filteredDestinationList=[];
+  // Function to update filtered list
+  void updateFilteredDestinations(List<DestinationModel> filteredDestinations) {
+    filteredDestinationList = filteredDestinations;
+    notifyListeners();
+  }
+// Function to reset to the full destination list
+  void resetToFullList() {
+    filteredDestinationList = destinationList;
+    notifyListeners();
+  }
+
+  ///for event serach
+  List<EventsModel>filteredeventList=[];
+  // Function to update filtered list
+  void updateFilteredEvents(List<EventsModel> filteredEvents) {
+    filteredeventList = filteredEvents;
+    notifyListeners();
+  }
+// Function to reset to the full destination list
+  void resetToEventFullList() {
+    filteredeventList = eventList;
+    notifyListeners();
+  }
+
+
+  ///for google map
+  Future<void> launchGoogleMaps() async {
+    const String googleMapsUrl = "https://www.google.com/maps";
+
+    if (await canLaunch(googleMapsUrl)) {
+      await launch(googleMapsUrl);
+    } else {
+      throw "Could not open the map.";
+    }
+  }
+
+  ///for cirular progress
+  bool isSaving = false;
+  void startLoading() {
+    isSaving = true;
+    notifyListeners();
+  }
+
+  void stopLoading() {
+    isSaving = false;
+    notifyListeners();
+  }
+
+
+ ///  Fetch Total Bookings Count
+  int _totalBookings = 0;
+  List<Map<String, dynamic>> eventBookingsList = [];
+
+  int get totalEventBookings => _totalBookings;
+  List<Map<String, dynamic>> get bookings => eventBookingsList;
+
+  // Fetch total bookings count
+  Future<void> fetchTotalBookings(String eventId) async {
+    try {
+      QuerySnapshot snapshot = await db.collection("EVENT")
+          .doc(eventId)
+          .collection("BOOKINGS")
+          .get();
+
+      _totalBookings = snapshot.size;
+      notifyListeners();
+    } catch (e) {
+      print("Error fetching booking count: $e");
+    }
+  }
+  ///Fetch All Booking Details When Tapped
+  Future<List<Map<String, dynamic>>> getEventBookings(String eventId) async {
+    List<Map<String, dynamic>> bookingList = [];
+    try {
+      QuerySnapshot snapshot = await db.collection("EVENT")
+          .doc(eventId)
+          .collection("BOOKINGS")
+          .get();
+
+      for (var doc in snapshot.docs) {
+        bookingList.add(doc.data() as Map<String, dynamic>);
+      }
+      return bookingList;
+    } catch (e) {
+      print("Error fetching bookings: $e");
+      return [];
+    }
+  }
+  List<EventTicketModel>getAllEventBookingsList=[];
+  void getAllEventBookings() async {
+    QuerySnapshot value = await db.collection("EVENT").doc().collection("BOOKINGS").get();
+
+    if (value.docs.isNotEmpty) {
+      getAllEventBookingsList.clear();
+
+      for (var element in value.docs) {
+        Map<dynamic, dynamic> eBook = element.data() as Map;
+        getAllEventBookingsList.add(EventTicketModel(
+          element.id,
+          eBook["EVENT_NAME"] ?? "",
+          eBook["EVENT_PLACE"] ?? "",
+          eBook["EVENT_DISTRICT"] ?? "",
+          eBook["EVENT_DATE"] ?? "",
+          eBook["TOTAL_TICKET"] ?? 0, // Ensure it's an int
+          eBook["EVENT_ENTRY_FEE"] ?? 0,
+          eBook["SUB_TOTAL"] ?? 0,
+          eBook["TOTAL_PRICE"] ?? 0,
+          eBook["EVENT_IMAGE"] ?? "",
+        ));
+      }
+    }
+
+    notifyListeners();  // Ensure UI rebuilds after data update
+    print("Total event bookings added into booking collection");
+  }
+
+
+  List<Map<String, dynamic>> _destinationBookings = [];
+  List<Map<String, dynamic>> _eventBookings = [];
+
+  List<Map<String, dynamic>> get destinationBookings => _destinationBookings;
+  List<Map<String, dynamic>> get eventBookings => _eventBookings;
+
+  /// Fetch all destination bookings
+  Future<void> loadDestinationBookings() async {
+    try {
+      QuerySnapshot querySnapshot = await db.collection("BOOKINGS").get();
+      _destinationBookings = querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .where((booking) => booking.containsKey("DEST_ID"))
+          .toList();
+      notifyListeners();
+    } catch (e) {
+      print("Error loading destination bookings: $e");
+    }
+  }
+
+  /// Fetch all event bookings
+  Future<void> loadEventBookings() async {
+    try {
+      QuerySnapshot querySnapshot = await db.collection("BOOKINGS").get();
+      _eventBookings = querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .where((booking) => booking.containsKey("EVENT_ID"))
+          .toList();
+      notifyListeners();
+    } catch (e) {
+      print("Error loading event bookings: $e");
+    }
+  }
+  // List<EventTicketModel> loadAllEventBookingsList=[];
+  // void loadAllEventBookings(){
+  //   db.collection("BOOKINGS").get().then((value) {
+  //     if(value.docs.isNotEmpty){
+  //       print("Came in if loop");
+  //       loadAllEventBookingsList.clear();
+  //       for(var element in value.docs){
+  //         print("Came in for loop");
+  //         Map<String, dynamic> ebook = element.data();
+  //         String travelDate = ebook["DATE"] is Timestamp
+  //             ? (ebook["DATE"] as Timestamp).toDate().toString()
+  //             : ebook["DATE"] ?? "";
+  //         loadAllEventBookingsList.add(EventTicketModel(
+  //           element.id,
+  //           ebook["EVENT_NAME"] ?? "",
+  //           ebook["EVENT_PLACE"] ?? "",
+  //           ebook["EVENT_DISTRICT"] ?? "",
+  //           travelDate,
+  //           int.tryParse(ebook["TOTAL_TICKET"].toString()) ?? 0,
+  //           num.tryParse(ebook["EVENT_ENTRY_FEE"]?.toString() ?? '0') ?? 0.0,
+  //           num.tryParse(ebook["SUB_TOTAL"]?.toString() ?? '0') ?? 0.0,
+  //           num.tryParse(ebook["TOTAL_PRICE"]?.toString() ?? '0') ?? 0.0,
+  //           ebook["EVENT_IMAGE"]??"",
+  //         ));
+  //       }
+  //       notifyListeners();
+  //       print("Exit");
+  //     }
+  //     notifyListeners();
+  //   },);
+  // }
+  //
+  //
+  // List<DestTicketModel> loadAllDestBookingsList=[];
+  // void loadAllDestBookings(){
+  //   db.collection("BOOKINGS").get().then((value) {
+  //     if(value.docs.isNotEmpty){
+  //       print("Came in  dest if loop");
+  //       loadAllDestBookingsList.clear();
+  //       for(var element in value.docs){
+  //         print("Came in  dest for loop");
+  //         Map<String, dynamic> ebook = element.data();
+  //         String travelDate = ebook["DATE"] is Timestamp
+  //             ? (ebook["DATE"] as Timestamp).toDate().toString()
+  //             : ebook["DATE"] ?? "";
+  //         loadAllDestBookingsList.add(DestTicketModel(
+  //           element.id,
+  //           ebook["DEST_NAME"] ?? "",
+  //           ebook["DEST_PLACE"] ?? "",
+  //           ebook["DEST_DISTRICT"] ?? "",
+  //           travelDate,
+  //           int.tryParse(ebook["TOTAL_TICKET"].toString()) ?? 0,
+  //           num.tryParse(ebook["DEST_ENTRY_FEE"]?.toString() ?? '0') ?? 0.0,
+  //           num.tryParse(ebook["SUB_TOTAL"]?.toString() ?? '0') ?? 0.0,
+  //           num.tryParse(ebook["TOTAL_PRICE"]?.toString() ?? '0') ?? 0.0,
+  //           ebook["DEST_IMAGE"]??"",
+  //         ));
+  //       }
+  //       notifyListeners();
+  //       print(" dest Exit");
+  //     }
+  //     notifyListeners();
+  //   },);
+  // }
+  List<EventTicketModel> loadAllEventBookingsList = [];
+  List<DestTicketModel> loadAllDestBookingsList = [];
+
+  // Helper method to parse date
+  String parseDate(dynamic dateField) {
+    if (dateField is Timestamp) {
+      return dateField.toDate().toString();
+    }
+    return dateField?.toString() ?? "";
+  }
+
+  // Helper method to parse numeric values
+  num parseNumeric(dynamic value, [num defaultValue = 0]) {
+    return num.tryParse(value?.toString() ?? '') ?? defaultValue;
+  }
+
+  // Load all bookings with type checking
+  Future<void> loadAllBookings() async {
+    try {
+      final snapshot = await db.collection("BOOKINGS").get();
+
+      if (snapshot.docs.isEmpty) return;
+
+      loadAllEventBookingsList.clear();
+      loadAllDestBookingsList.clear();
+
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        final bookingType = determineBookingType(data);
+
+        if (bookingType == BookingType.event) {
+          loadAllEventBookingsList.add(createEventBooking(doc.id, data));
+        } else if (bookingType == BookingType.destination) {
+          loadAllDestBookingsList.add(createDestBooking(doc.id, data));
+        }
+      }
+
+      notifyListeners();
+    } catch (e) {
+      print('Error loading bookings: $e');
+      // Handle error appropriately
+    }
+  }
+
+  // Helper to determine booking type
+  BookingType determineBookingType(Map<String, dynamic> data) {
+    // Check for event-specific fields
+    if (data.containsKey("EVENT_NAME") && data.containsKey("EVENT_PLACE")) {
+      return BookingType.event;
+    }
+    // Check for destination-specific fields
+    if (data.containsKey("DEST_NAME") && data.containsKey("DEST_PLACE")) {
+      return BookingType.destination;
+    }
+    // Default to event if can't determine (you might want to handle this differently)
+    return BookingType.event;
+  }
+
+  // Create event booking from data
+  EventTicketModel createEventBooking(String id, Map<String, dynamic> data) {
+    return EventTicketModel(
+      id,
+      data["EVENT_NAME"] ?? "",
+      data["EVENT_PLACE"] ?? "",
+      data["EVENT_DISTRICT"] ?? "",
+      parseDate(data["DATE"]),
+      int.tryParse(data["TOTAL_TICKET"]?.toString() ?? "0") ?? 0,
+      parseNumeric(data["EVENT_ENTRY_FEE"]),
+      parseNumeric(data["SUB_TOTAL"]),
+      parseNumeric(data["TOTAL_PRICE"]),
+      data["EVENT_IMAGE"] ?? "",
+    );
+  }
+
+  // Create destination booking from data
+  DestTicketModel createDestBooking(String id, Map<String, dynamic> data) {
+    return DestTicketModel(
+      id,
+      data["DEST_NAME"] ?? "",
+      data["DEST_PLACE"] ?? "",
+      data["DEST_DISTRICT"] ?? "",
+      parseDate(data["DATE"]),
+      int.tryParse(data["TOTAL_TICKET"]?.toString() ?? "0") ?? 0,
+      parseNumeric(data["DEST_ENTRY_FEE"]),
+      parseNumeric(data["SUB_TOTAL"]),
+      parseNumeric(data["TOTAL_PRICE"]),
+      data["DEST_IMAGE"] ?? "",
+    );
+  }
+}
+
+// First, let's create an enum to distinguish between booking types
+enum BookingType {
+  event,
+  destination
 }

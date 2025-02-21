@@ -282,16 +282,29 @@ class DestinationScreen extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                     ),),
                         SizedBox(height: 16),
-                        Container(
-                          height: 200,
-                          width: width,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage("assets/location.jpeg"),
-                              fit: BoxFit.fill
-                            ),
+                        Consumer<MainProvider>(
+                          builder: (context1,mapValue,child) {
+                            return InkWell(
+                              onTap: () {
+                                print("Clicked map");
+                                mapValue.launchGoogleMaps();
+                                print("Viewinggg");
+                              },
+                              child: Container(
+                                height: 200,
+                                width: width,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage("assets/location.jpeg"),
+                                    fit: BoxFit.fill
+                                  ),
 
-                          ),
+
+                                ),
+                                child: Center(child: Image.asset("assets/icons/map.png",scale: 8,)),
+                              ),
+                            );
+                          }
                         ),
                         SizedBox(height: 10,),
                         ElevatedButton(

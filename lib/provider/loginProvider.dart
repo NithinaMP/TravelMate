@@ -16,8 +16,6 @@ import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/constants/globalMethods.dart';
 import 'package:travelmate/models/userModel.dart';
 import 'package:travelmate/provider/mainProvider.dart';
-
-import '../user/homeScreen.dart';
 import '../user/userBottomScreen.dart';
 
 class LoginProvider extends ChangeNotifier{
@@ -34,78 +32,80 @@ class LoginProvider extends ChangeNotifier{
   TextEditingController RegPlaceController=TextEditingController();
   File? addUsersImage;
   String UsersImageURL = "";
-  // Future<void> addRegistraion(BuildContext context) async {
-  //
-  //   String id=DateTime.now().microsecondsSinceEpoch.toString();
-  //   HashMap<String,dynamic>addReg=HashMap();
-  //   addReg["REG_ID"]=id;
-  //   addReg["NAME"]=RegNameController.text;
-  //   addReg["PHONE_NUMBER"]=RegPhoneController.text;
-  //   addReg["PASSWORD"]=RegPassWordController.text;
-  //   addReg["CONFIRM_PASSWORD"]=RegConfirmPassWordController.text;
-  //   addReg["TYPE"]="USER";
-  //
-  //   db.collection("USERS").doc(id).set(addReg,SetOptions(merge: true));
-  //
-  //   SharedPreferences prefs=await SharedPreferences.getInstance();
-  //   await prefs.setString("PHONE_NUMBER", RegPhoneController.text);
-  //   await prefs.setString("PASSWORD", RegPassWordController.text);
-  //   userAuthorized(context, RegPhoneController.text, RegPassWordController.text);
-  //
-  // }
-  Future<void> addRegistraion(BuildContext context,String from,String oldid) async {
+  ///for cirular progress
+  bool isSaving = false;
+  Future<void> addRegistraion(BuildContext context, String from, String oldid) async {
+    try {
+      isSaving = true;
+      notifyListeners(); // Notify UI to show loading
 
-    String id=oldid;
-    HashMap<String,dynamic>addReg=HashMap();
-    if(from=="NEW"){
-      id=DateTime.now().microsecondsSinceEpoch.toString();
-      addReg["REG_ID"]=id;
-      addReg["TYPE"]="USER";
-      addReg["PASSWORD"]=RegPassWordController.text;
-      addReg["CONFIRM_PASSWORD"]=RegConfirmPassWordController.text;
+      String id = oldid;
+      HashMap<String, dynamic> addReg = HashMap();
+
+      if (from == "NEW") {
+        id = DateTime.now().microsecondsSinceEpoch.toString();
+        addReg["REG_ID"] = id;
+        addReg["TYPE"] = "USER";
+        addReg["PASSWORD"] = RegPassWordController.text;
+        addReg["CONFIRM_PASSWORD"] = RegConfirmPassWordController.text;
+      }
+
+      addReg["NAME"] = RegNameController.text;
+      addReg["PHONE_NUMBER"] = RegPhoneController.text;
+      addReg["PLACE"] = RegPlaceController.text;
+      loginName = RegNameController.text;
+      loginPhone = RegPhoneController.text;
+      //
+      // if (addUsersImage != null) {
+      //   String photoId = DateTime.now().millisecondsSinceEpoch.toString();
+      //   ref = FirebaseStorage.instance.ref().child(photoId);
+      //   await ref.putFile(addUsersImage!).whenComplete(() async {
+      //     await ref.getDownloadURL().then((value) {
+      //       addReg["USERS_IMAGE"] = value;
+      //     });
+      //   });
+      // } else if (UsersImageURL != "") {
+      //   addReg["USERS_IMAGE"] = UsersImageURL;
+      // } else {
+      //   addReg["USERS_IMAGE"] = "";
+      // }
+      if (addUsersImage != null) {
+        String photoId = DateTime.now().millisecondsSinceEpoch.toString();
+        Reference ref = FirebaseStorage.instance.ref().child(photoId);
+        await ref.putFile(addUsersImage!).whenComplete(() async {
+          await ref.getDownloadURL().then((value) {
+            addReg["USERS_IMAGE"] = value;
+            updateProfileImage(value); // Update profile image URL
+          });
+        });
+      }
+      await db.collection("USERS").doc(id).set(addReg, SetOptions(merge: true));
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("PHONE_NUMBER", RegPhoneController.text);
+      await prefs.setString("PASSWORD", RegPassWordController.text);
+
+      isSaving = false;
+      notifyListeners(); // Hide loading indicator
+
+      // Show success snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Profile updated successfully!")),
+      );
+
+      // Navigate back
+      Navigator.pop(context);
+
+    } catch (e) {
+      isSaving = false;
+      notifyListeners(); // Hide loading indicator
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to update profile")),
+      );
     }
-
-    addReg["NAME"]=RegNameController.text;
-    addReg["PHONE_NUMBER"]=RegPhoneController.text;
-    addReg["PLACE"]=RegPlaceController.text;
-    loginName=RegNameController.text;
-    loginPhone=RegPhoneController.text;
-    // loginPhoto=
-
-
-    if (addUsersImage != null) {
-      String photoId = DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString();
-      ref = FirebaseStorage.instance.ref().child(photoId);
-      await ref.putFile(addUsersImage!).whenComplete(() async {
-        await ref.getDownloadURL().then((value) {
-          addReg["USERS_IMAGE"] = value;
-        },);
-      },);
-    }
-    else if (UsersImageURL != "") {
-      addReg["USERS_IMAGE"] = UsersImageURL;
-    }
-
-    else {
-      addReg["USERS_IMAGE"] = "";
-    }
-
-
-
-
-
-    db.collection("USERS").doc(id).set(addReg,SetOptions(merge: true));
-
-    SharedPreferences prefs=await SharedPreferences.getInstance();
-    await prefs.setString("PHONE_NUMBER", RegPhoneController.text);
-    await prefs.setString("PASSWORD", RegPassWordController.text);
-    userAuthorized(context, RegPhoneController.text, RegPassWordController.text);
-    notifyListeners();
-
   }
+
   Future UsersgetImagegallery() async {
     final imagePicker = ImagePicker();
     final pickedImage =
@@ -168,6 +168,7 @@ class LoginProvider extends ChangeNotifier{
       addUsersImage = File(croppedFile.path);
 
       // print(Registerfileimg.toString() + "fofiifi");
+      getUser();
       notifyListeners();
     }
   }
@@ -186,6 +187,7 @@ class LoginProvider extends ChangeNotifier{
   String loginId="";
   String loginType="";
   String loginPhoto="";
+  String loginPlace="";
 
 
   Future<void> userAuthorized(BuildContext context, String? lgPhone, String? lgPassword) async {
@@ -210,7 +212,8 @@ class LoginProvider extends ChangeNotifier{
           loginPassword = map["PASSWORD"] ?? "";
           loginType=map["TYPE"]??"";
           loginPhone=map["PHONE_NUMBER"]??"";
-          print("jjjjj${loginPhone}");
+          loginPhoto=map["USERS_IMAGE"]??"";
+          print("Phone number: ${loginPhone}");
 
           if (map["TYPE"].toString() == "ADMIN") {
             callNextReplacement(context, adminhomeWidget());
@@ -241,8 +244,8 @@ class LoginProvider extends ChangeNotifier{
       if(value.exists){
         RegNameController.text=editreg["NAME"].toString();
         RegPhoneController.text=editreg["PHONE_NUMBER"].toString();
+        RegPlaceController.text=editreg["PLACE"].toString();
         notifyListeners();
-
       }
     },);
     notifyListeners();
@@ -262,12 +265,102 @@ class LoginProvider extends ChangeNotifier{
               userdata["PHONE_NUMBER"],
               userdata["USERS_IMAGE"],
               userdata["PLACE"],
-
           ));
         }
+        notifyListeners();
       }
     },);
   }
 
+  void updateProfileImage(String newImageUrl) {
+    loginPhoto = newImageUrl;
+    notifyListeners();
+  }
+
 
 }
+
+// Future<void> fetchUserData(String userId) async {
+//   DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection("USERS").doc(userId).get();
+//   if (userDoc.exists) {
+//     loginPhoto = userDoc["USERS_IMAGE"];  // Make sure "photo" key exists
+//     loginName = userDoc["NAME"];
+//     loginPhone = userDoc["PHONE_NUMBER"];
+//     loginPlace = userDoc["PLACE"];
+//     notifyListeners(); // Important to trigger UI update
+//   }
+// }
+// Future<void> addRegistraion(BuildContext context) async {
+//
+//   String id=DateTime.now().microsecondsSinceEpoch.toString();
+//   HashMap<String,dynamic>addReg=HashMap();
+//   addReg["REG_ID"]=id;
+//   addReg["NAME"]=RegNameController.text;
+//   addReg["PHONE_NUMBER"]=RegPhoneController.text;
+//   addReg["PASSWORD"]=RegPassWordController.text;
+//   addReg["CONFIRM_PASSWORD"]=RegConfirmPassWordController.text;
+//   addReg["TYPE"]="USER";
+//
+//   db.collection("USERS").doc(id).set(addReg,SetOptions(merge: true));
+//
+//   SharedPreferences prefs=await SharedPreferences.getInstance();
+//   await prefs.setString("PHONE_NUMBER", RegPhoneController.text);
+//   await prefs.setString("PASSWORD", RegPassWordController.text);
+//   userAuthorized(context, RegPhoneController.text, RegPassWordController.text);
+//
+// }
+
+// Future<void> addRegistraion(BuildContext context,String from,String oldid) async {
+//
+//   String id=oldid;
+//   HashMap<String,dynamic>addReg=HashMap();
+//   if(from=="NEW"){
+//     id=DateTime.now().microsecondsSinceEpoch.toString();
+//     addReg["REG_ID"]=id;
+//     addReg["TYPE"]="USER";
+//     addReg["PASSWORD"]=RegPassWordController.text;
+//     addReg["CONFIRM_PASSWORD"]=RegConfirmPassWordController.text;
+//   }
+//
+//   addReg["NAME"]=RegNameController.text;
+//   addReg["PHONE_NUMBER"]=RegPhoneController.text;
+//   addReg["PLACE"]=RegPlaceController.text;
+//   loginName=RegNameController.text;
+//   loginPhone=RegPhoneController.text;
+//   // loginPhoto=
+//
+//
+//   if (addUsersImage != null) {
+//     String photoId = DateTime
+//         .now()
+//         .millisecondsSinceEpoch
+//         .toString();
+//     ref = FirebaseStorage.instance.ref().child(photoId);
+//     await ref.putFile(addUsersImage!).whenComplete(() async {
+//       await ref.getDownloadURL().then((value) {
+//         addReg["USERS_IMAGE"] = value;
+//       },);
+//     },);
+//   }
+//   else if (UsersImageURL != "") {
+//     addReg["USERS_IMAGE"] = UsersImageURL;
+//   }
+//
+//   else {
+//     addReg["USERS_IMAGE"] = "";
+//   }
+//
+//
+//
+//
+//
+//   db.collection("USERS").doc(id).set(addReg,SetOptions(merge: true));
+//
+//
+//   SharedPreferences prefs=await SharedPreferences.getInstance();
+//   await prefs.setString("PHONE_NUMBER", RegPhoneController.text);
+//   await prefs.setString("PASSWORD", RegPassWordController.text);
+//   userAuthorized(context, RegPhoneController.text, RegPassWordController.text);
+//   notifyListeners();
+//
+// }

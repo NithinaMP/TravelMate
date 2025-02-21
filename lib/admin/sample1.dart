@@ -1,427 +1,1014 @@
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-// import 'package:provider/provider.dart';
-// import '../constants/call_functions.dart';
-// import '../constants/globalMethods.dart';
-// import '../provider/mainProvider.dart';
-// import '../user/payment.dart';
-//
-//
-// class ConfirmBooking extends StatelessWidget {
-//   final String userId,
-//       destId,
-//       Name,
-//       Place,
-//       District,
-//       EntryFee,
-//       Image;
-//   final int selectedCount;
-//
-//   const ConfirmBooking({
-//     super.key,
-//     required this.userId,
-//     required this.destId,
-//     required this.Name,
-//     required this.Place,
-//     required this.District,
-//     required this.EntryFee,
-//     required this.Image,
-//     required this.selectedCount,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final num unitPrice = num.tryParse(EntryFee) ?? 0;
-//     final num totalFee = unitPrice * selectedCount;
-//     final num gst = totalFee * 0.02;
-//     final num totalAmount = totalFee + gst;
-//
-//     final double height = MediaQuery.of(context).size.height;
-//     final double width = MediaQuery.of(context).size.width;
-//
-//     return Scaffold(
-//       backgroundColor: const Color(0xffe6f7f5),
-//       appBar: AppBar(
-//         title: const Text("Confirm booking", style: TextStyle(color: Colors.white)),
-//         centerTitle: true,
-//         backgroundColor: Colors.black,
-//       ),
-//       body: Column(
-//         children: [
-//           const SizedBox(height: 10),
-//           _BookingDetails(
-//             destName: Name,
-//             destPlace: Place,
-//             destDistrict: District,
-//             selectedCount: selectedCount,
-//           ),
-//           _CancellationPolicy(height: height, width: width),
-//           _PaymentSummary(
-//             height: height,
-//             width: width,
-//             unitPrice: unitPrice,
-//             totalFee: totalFee,
-//             gst: gst,
-//             totalAmount: totalAmount,
-//           ),
-//           _ConsentText(height: height, width: width),
-//           const Spacer(),
-//           _BottomBar(
-//             width: width,
-//             totalAmount: totalAmount,
-//             onContinue: () => _handleContinue(context, totalFee, totalAmount),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   void _handleContinue(BuildContext context, num totalFee, num totalAmount) {
-//     final selectedDate = context.read<MainProvider>().selectedDate;
-//     if (selectedDate == null) {
-//       showSnackBarAlert(context, "Please select a date before proceeding");
-//     } else {
-//       callNext(
-//         context,
-//         PaymentScreen(
-//           userId: userId,
-//           destId: destId,
-//           destName: Name,
-//           destPlace: Place,
-//           destDistrict: District,
-//           destEntryFee: EntryFee,
-//           destImage: Image,
-//           selectedCount: selectedCount,
-//           totalAmount: totalAmount,
-//           subTotal: totalFee,
-//         ),
-//       );
-//     }
-//   }
-// }
-//
-// // Widgets Broken into Reusable Components
-//
-// class _BookingDetails extends StatelessWidget {
-//   final String destName, destPlace, destDistrict;
-//   final int selectedCount;
-//
-//   const _BookingDetails({
-//     required this.destName,
-//     required this.destPlace,
-//     required this.destDistrict,
-//     required this.selectedCount,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//       child: Container(
-//         decoration: BoxDecoration(
-//           border: Border.all(color: Colors.grey.shade200),
-//           color: Colors.white,
-//           borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-//         ),
-//         padding: const EdgeInsets.all(15),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 Text(destName),
-//                 Text("Total members: $selectedCount"),
-//               ],
-//             ),
-//             Text("$destPlace, $destDistrict"),
-//             Consumer<MainProvider>(
-//               builder: (context, dValue, child) {
-//                 final selectedDate = dValue.selectedDate;
-//                 String formattedDate = selectedDate != null
-//                     ? DateFormat('dd-MM-yyyy').format(selectedDate)
-//                     : "Select Date";
-//
-//                 return GestureDetector(
-//                   onTap: () async {
-//                     DateTime? pickedDate = await showDatePicker(
-//                       context: context,
-//                       initialDate: DateTime.now(),
-//                       firstDate: DateTime.now(),
-//                       lastDate: DateTime(2100),
-//                     );
-//                     if (pickedDate != null) {
-//                       dValue.setSelectedDate(pickedDate);
-//                     }
-//                   },
-//                   child: Row(
-//                     children: [
-//                       const Icon(Icons.calendar_today),
-//                       const SizedBox(width: 8),
-//                       Text(formattedDate, style: const TextStyle(color: Colors.blue)),
-//                     ],
-//                   ),
-//                 );
-//               },
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class _CancellationPolicy extends StatelessWidget {
-//   final double height, width;
-//
-//   const _CancellationPolicy({required this.height, required this.width});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//       child: Container(
-//         height: height / 8.5,
-//         width: width,
-//         decoration: BoxDecoration(
-//           color: const Color(0xffc0fce3),
-//           borderRadius: const BorderRadius.vertical(bottom: Radius.circular(10)),
-//           border: Border.all(color: Colors.grey.shade200),
-//         ),
-//         padding: const EdgeInsets.all(10),
-//         child: const Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text("Cancellation Available"),
-//             Text("This venue supports booking cancellation. To know more view",
-//                 style: TextStyle(fontSize: 11)),
-//             Text("cancellation policy", style: TextStyle(color: Colors.blue)),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class _PaymentSummary extends StatelessWidget {
-//   final double height, width;
-//   final num unitPrice, totalFee, gst, totalAmount;
-//
-//   const _PaymentSummary({
-//     required this.height,
-//     required this.width,
-//     required this.unitPrice,
-//     required this.totalFee,
-//     required this.gst,
-//     required this.totalAmount,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//       child: Container(
-//         height: height / 5,
-//         width: width,
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           borderRadius: BorderRadius.circular(10),
-//           border: Border.all(color: Colors.grey.shade200),
-//         ),
-//         padding: const EdgeInsets.all(10),
-//         child: Column(
-//           children: [
-//             _summaryRow("Entry Fee", unitPrice),
-//             _summaryRow("Total", totalFee),
-//             _summaryRow("GST(2%)", gst),
-//             const Divider(),
-//             _summaryRow("Amount to pay", totalAmount),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _summaryRow(String title, num value) {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Text(title),
-//         Text("₹ ${value.toStringAsFixed(2)}"),
-//       ],
-//     );
-//   }
-// }
-//
-// class _ConsentText extends StatelessWidget {
-//   final double height, width;
-//
-//   const _ConsentText({required this.height, required this.width});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//       child: Container(
-//         height: height / 14,
-//         width: width,
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           borderRadius: BorderRadius.circular(10),
-//           border: Border.all(color: Colors.grey.shade200),
-//         ),
-//         padding: const EdgeInsets.all(10),
-//         child: const Text(
-//           "By proceeding, I express my consent to complete this transaction.",
-//           style: TextStyle(fontSize: 10.35),
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class _BottomBar extends StatelessWidget {
-//   final double width;
-//   final num totalAmount;
-//   final VoidCallback onContinue;
-//
-//   const _BottomBar({
-//     required this.width,
-//     required this.totalAmount,
-//     required this.onContinue,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-//       decoration: const BoxDecoration(
-//         color: Colors.white,
-//         border: Border(top: BorderSide(color: Colors.black12, width: 1)),
-//       ),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           Text("Total: ₹ ${totalAmount.toStringAsFixed(2)}",
-//               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-//           ElevatedButton(
-//             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-//             onPressed: onContinue,
-//             child: const Text("Continue", style: TextStyle(color: Colors.white)),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-//
-//
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:travelmate/admin/eventBookedPeoples.dart';
+import 'package:travelmate/constants/call_functions.dart';
+import 'package:travelmate/constants/constant_colors.dart';
 
-
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:travelmate/provider/mainProvider.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:travelmate/models/userModel.dart';
+import 'package:travelmate/provider/mainProvider.dart';
+///
+// class BookingListScreen extends StatelessWidget {
 //
-// class SampleOne extends StatefulWidget {
-//   const SampleOne({super.key});
-//
-//   @override
-//   State<SampleOne> createState() => _SampleOneState();
-// }
-//
-// class _SampleOneState extends State<SampleOne> {
-//   bool isChecked = false;
-//   String? selectDesignation;
-//   final List<String> designation = ["Available", "Not Available"];
 //   @override
 //   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Dropdown"),
+//     return DefaultTabController(
+//       length: 2, // Two tabs: Events and Destinations
+//       child: Scaffold(
+//         appBar: AppBar(
+//           leading: InkWell(
+//             onTap: () {
+//               backto(context);
+//             },
+//             child: Icon(Icons.arrow_back_ios_new_sharp, size: 32),
+//           ),
+//           title: const Text(
+//             "My Bookings",
+//             style: TextStyle(
+//               fontSize: 24,
+//               fontWeight: FontWeight.bold,
+//               color: Colors.white,
+//             ),
+//           ),
+//           flexibleSpace: Container(
+//             decoration: BoxDecoration(
+//               gradient: admingradient,
+//             ),
+//           ),
+//           bottom: const TabBar(
+//             tabs: [
+//               Tab(
+//                 icon: Icon(Icons.event, color: Colors.white),
+//                 child: Text("Events", style: TextStyle(color: Colors.white)),
+//               ),
+//               Tab(
+//                 icon: Icon(Icons.place, color: Colors.white),
+//                 child: Text("Destinations", style: TextStyle(color: Colors.white)),
+//               ),
+//             ],
+//             indicatorColor: Colors.white,
+//             indicatorWeight: 4,
+//           ),
+//         ),
+//         body: Container(
+//           decoration: BoxDecoration(
+//             color: Colors.white,
+//           ),
+//           child: Consumer<MainProvider>(
+//             builder: (context, value, child) {
+//               return TabBarView(
+//                 children: [
+//                   // Events Tab
+//                   _buildBookingList(),
+//                   // Destinations Tab
+//                   _buildDBookingList(),
+//                 ],
+//               );
+//             },
+//           ),
+//         ),
 //       ),
-//       body: Column(
-//         children: [
-//           Consumer<MainProvider>(
+//     );
+//   }
+//
+//   Widget _buildBookingList() {
+//     return Consumer<MainProvider>(
+//       builder: (context, eValue, child) {
+//         return ListView.builder(
+//           padding: const EdgeInsets.all(16),
+//           itemCount: eValue.loadAllEventBookingsList.length,
+//           itemBuilder: (context, index) {
+//             var booking = eValue.loadAllEventBookingsList[index];
+//             return Card(
+//               margin: const EdgeInsets.only(bottom: 16),
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(15),
+//               ),
+//               elevation: 4,
+//               child: InkWell(
+//                 onTap: () {
+//                   showDialog(
+//                     context: context,
+//                     builder: (context) => AlertDialog(
+//                       backgroundColor: Colors.black,
+//                       title: Text(booking.eventName, style: const TextStyle(color: Colors.white)),
+//                       content: Column(
+//                         mainAxisSize: MainAxisSize.min,
+//                         children: [
+//                           Image.network(
+//                             booking.eventImage,
+//                             height: 150,
+//                             fit: BoxFit.cover,
+//                           ),
+//                           const SizedBox(height: 10),
+//                           Text("Date: ${booking.eventDate}", style: const TextStyle(color: Colors.white)),
+//                           Text("Location: ${booking.eventPlace}, ${booking.eventDistrict}", style: const TextStyle(color: Colors.white)),
+//                           Text("Tickets: ${booking.totalMembers}", style: const TextStyle(color: Colors.white)),
+//                           Text("Total Price: ₹${booking.totalAmount}", style: const TextStyle(color: Colors.white)),
+//                         ],
+//                       ),
+//                       actions: [
+//                         TextButton(
+//                           onPressed: () {
+//                             callNext(context, EventBookedPeoples());
+//                           },
+//                           child: const Text("View", style: TextStyle(color: Colors.orange)),
+//                         ),
+//                       ],
+//                     ),
+//                   );
+//                 },
+//                 child: Row(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     ClipRRect(
+//                       borderRadius: const BorderRadius.only(
+//                         topLeft: Radius.circular(16),
+//                         bottomLeft: Radius.circular(16),
+//                       ),
+//                       child: Image.network(
+//                         booking.eventImage,
+//                         width: 120,
+//                         height: 120,
+//                         fit: BoxFit.cover,
+//                       ),
+//                     ),
+//                     Expanded(
+//                       child: Padding(
+//                         padding: const EdgeInsets.all(12),
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               booking.eventName,
+//                               style: const TextStyle(
+//                                 fontSize: 18,
+//                                 fontWeight: FontWeight.bold,
+//                                 color: Colors.deepPurple,
+//                               ),
+//                             ),
+//                             const SizedBox(height: 8),
+//                             Text("Date: ${booking.eventDate}", style: TextStyle(color: Colors.grey.shade700)),
+//                             Text("Tickets: ${booking.totalMembers}", style: TextStyle(color: Colors.grey.shade700)),
+//                             Text("Total Price: ₹${booking.totalAmount}", style: const TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold)),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+//
+//   Widget _buildDBookingList() {
+//     return Consumer<MainProvider>(
+//       builder: (context, eValue, child) {
+//         return ListView.builder(
+//           padding: const EdgeInsets.all(16),
+//           itemCount: eValue.loadAllDestBookingsList.length,
+//           itemBuilder: (context, index) {
+//             var dbooking = eValue.loadAllDestBookingsList[index];
+//             return Card(
+//               margin: const EdgeInsets.only(bottom: 16),
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(15),
+//               ),
+//               elevation: 4,
+//               child: InkWell(
+//                 onTap: () {
+//                   showDialog(
+//                     context: context,
+//                     builder: (context) => AlertDialog(
+//                       backgroundColor: Colors.black,
+//                       title: Text(dbooking.destName, style: const TextStyle(color: Colors.white)),
+//                       content: Column(
+//                         mainAxisSize: MainAxisSize.min,
+//                         children: [
+//                           Image.network(
+//                             dbooking.destImage,
+//                             height: 150,
+//                             fit: BoxFit.cover,
+//                           ),
+//                           const SizedBox(height: 10),
+//                           Text("Date: ${dbooking.travelDate}", style: const TextStyle(color: Colors.white)),
+//                           Text("Location: ${dbooking.destPlace}, ${dbooking.destDistrict}", style: const TextStyle(color: Colors.white)),
+//                           Text("Tickets: ${dbooking.totalMembers}", style: const TextStyle(color: Colors.white)),
+//                           Text("Total Price: ₹${dbooking.totalAmount}", style: const TextStyle(color: Colors.white)),
+//                         ],
+//                       ),
+//                       actions: [
+//                         TextButton(
+//                           onPressed: () {
+//                             callNext(context, EventBookedPeoples());
+//                           },
+//                           child: const Text("View", style: TextStyle(color: Colors.orange)),
+//                         ),
+//                       ],
+//                     ),
+//                   );
+//                 },
+//                 child: Row(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     ClipRRect(
+//                       borderRadius: const BorderRadius.only(
+//                         topLeft: Radius.circular(16),
+//                         bottomLeft: Radius.circular(16),
+//                       ),
+//                       child: Image.network(
+//                         dbooking.destImage,
+//                         width: 120,
+//                         height: 120,
+//                         fit: BoxFit.cover,
+//                       ),
+//                     ),
+//                     Expanded(
+//                       child: Padding(
+//                         padding: const EdgeInsets.all(12),
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               dbooking.destName,
+//                               style: const TextStyle(
+//                                 fontSize: 18,
+//                                 fontWeight: FontWeight.bold,
+//                                 color: Colors.deepPurple,
+//                               ),
+//                             ),
+//                             const SizedBox(height: 8),
+//                             Text("Date: ${dbooking.travelDate}", style: TextStyle(color: Colors.grey.shade700)),
+//                             Text("Tickets: ${dbooking.totalMembers}", style: TextStyle(color: Colors.grey.shade700)),
+//                             Text("Total Price: ₹${dbooking.totalAmount}", style: const TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold)),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
+///
+class BookingListScreen extends StatelessWidget {
+  // Shared dialog content builder
+  Widget _buildDialogContent({
+    required String title,
+    required String imageUrl,
+    required String date,
+    required String location,
+    required String district,
+    required int tickets,
+    required num totalPrice,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SafeNetworkImage(
+          imageUrl: imageUrl,
+          height: 150,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
+        const SizedBox(height: 10),
+        Text("Date: $date",
+            style: const TextStyle(color: Colors.white)),
+        Text("Location: $location, $district",
+            style: const TextStyle(color: Colors.white)),
+        Text("Tickets: $tickets",
+            style: const TextStyle(color: Colors.white)),
+        Text("Total Price: ₹$totalPrice",
+            style: const TextStyle(color: Colors.white)),
+      ],
+    );
+  }
+
+  // Shared booking card builder
+  Widget _buildBookingCard({
+    required BuildContext context,
+    required String title,
+    required String imageUrl,
+    required String date,
+    required int tickets,
+    required num totalPrice,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 4,
+      child: InkWell(
+        onTap: onTap,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                bottomLeft: Radius.circular(16),
+              ),
+              child: SafeNetworkImage(
+                imageUrl: imageUrl,
+                width: 120,
+                height: 120,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text("Date: $date",
+                        style: TextStyle(color: Colors.grey.shade700)),
+                    Text("Tickets: $tickets",
+                        style: TextStyle(color: Colors.grey.shade700)),
+                    Text("Total Price: ₹$totalPrice",
+                        style: const TextStyle(
+                            color: Colors.deepPurple,
+                            fontWeight: FontWeight.bold
+                        )),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBookingList() {
+    return Consumer<MainProvider>(
+      builder: (context, provider, _) {
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: provider.loadAllEventBookingsList.length,
+          itemBuilder: (context, index) {
+            final booking = provider.loadAllEventBookingsList[index];
+            return _buildBookingCard(
+              context: context,
+              title: booking.eventName,
+              imageUrl: booking.eventImage,
+              date: booking.eventDate,
+              tickets: booking.totalMembers,
+              totalPrice: booking.totalAmount,
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    backgroundColor: Colors.black,
+                    title: Text(booking.eventName,
+                        style: const TextStyle(color: Colors.white)),
+                    content: _buildDialogContent(
+                      title: booking.eventName,
+                      imageUrl: booking.eventImage,
+                      date: booking.eventDate,
+                      location: booking.eventPlace,
+                      district: booking.eventDistrict,
+                      tickets: booking.totalMembers,
+                      totalPrice: booking.totalAmount,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          callNext(context, EventBookedPeoples());
+                        },
+                        child: const Text("View",
+                            style: TextStyle(color: Colors.orange)),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildDBookingList() {
+    return Consumer<MainProvider>(
+      builder: (context, provider, _) {
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: provider.loadAllDestBookingsList.length,
+          itemBuilder: (context, index) {
+            final booking = provider.loadAllDestBookingsList[index];
+            return _buildBookingCard(
+              context: context,
+              title: booking.destName,
+              imageUrl: booking.destImage,
+              date: booking.travelDate,
+              tickets: booking.totalMembers,
+              totalPrice: booking.totalAmount,
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    backgroundColor: Colors.black,
+                    title: Text(booking.destName,
+                        style: const TextStyle(color: Colors.white)),
+                    content: _buildDialogContent(
+                      title: booking.destName,
+                      imageUrl: booking.destImage,
+                      date: booking.travelDate,
+                      location: booking.destPlace,
+                      district: booking.destDistrict,
+                      tickets: booking.totalMembers,
+                      totalPrice: booking.totalAmount,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          callNext(context, EventBookedPeoples());
+                        },
+                        child: const Text("View",
+                            style: TextStyle(color: Colors.orange)),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: InkWell(
+            onTap: () => backto(context),
+            child: const Icon(Icons.arrow_back_ios_new_sharp, size: 32),
+          ),
+          title: const Text(
+            "My Bookings",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: admingradient,
+            ),
+          ),
+          bottom: const TabBar(
+            tabs: [
+              Tab(
+                icon: Icon(Icons.event, color: Colors.white),
+                child: Text("Events", style: TextStyle(color: Colors.white)),
+              ),
+              Tab(
+                icon: Icon(Icons.place, color: Colors.white),
+                child: Text("Destinations", style: TextStyle(color: Colors.white)),
+              ),
+            ],
+            indicatorColor: Colors.white,
+            indicatorWeight: 4,
+          ),
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+          ),
+          child: TabBarView(
+            children: [
+              _buildBookingList(),
+              _buildDBookingList(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Modified Image widget to handle empty URLs
+class SafeNetworkImage extends StatelessWidget {
+  final String imageUrl;
+  final double width;
+  final double height;
+  final BoxFit fit;
+
+  const SafeNetworkImage({
+    required this.imageUrl,
+    this.width = 120,
+    this.height = 120,
+    this.fit = BoxFit.cover,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (imageUrl.isEmpty) {
+      return Container(
+        width: width,
+        height: height,
+        color: Colors.grey[300],
+        child: Icon(Icons.image_not_supported, color: Colors.grey[600]),
+      );
+    }
+
+    return Image.network(
+      imageUrl,
+      width: width,
+      height: height,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: width,
+          height: height,
+          color: Colors.grey[300],
+          child: Icon(Icons.broken_image, color: Colors.grey[600]),
+        );
+      },
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Container(
+          width: width,
+          height: height,
+          color: Colors.grey[300],
+          child: Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+  }
+}
+///old
+// class BookingListScreen extends StatelessWidget {
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     return DefaultTabController(
+//       length: 2, // Two tabs: Events and Destinations
+//       child: Scaffold(
+//         appBar: AppBar(
+//           leading: InkWell(
+//             onTap: () {
+//               backto(context);
+//             },
+//               child: Icon(Icons.arrow_back_ios_new_sharp,size: 32,)),
+//           title: const Text(
+//             "My Bookings",
+//             style: TextStyle(
+//               fontSize: 24,
+//               fontWeight: FontWeight.bold,
+//               color: Colors.white,
+//             ),
+//           ),
+//           // centerTitle: true,
+//           flexibleSpace: Container(
+//             decoration: BoxDecoration(
+//               gradient: admingradient
+//               // gradient: LinearGradient(
+//               //   colors: [Colors.deepPurple, Colors.purpleAccent],
+//               //   begin: Alignment.topLeft,
+//               //   end: Alignment.bottomRight,
+//               // ),
+//             ),
+//           ),
+//           bottom: const TabBar(
+//             tabs: [
+//               Tab(
+//                 icon: Icon(Icons.event, color: Colors.white),
+//                 child: Text("Events",style: TextStyle(color: Colors.white),),
+//               ),
+//               Tab(
+//                 icon: Icon(Icons.place, color: Colors.white),
+//                 // text: "Destinations",
+//                 child: Text("Destinations",style: TextStyle(color: Colors.white),),
+//               ),
+//             ],
+//             indicatorColor: Colors.white,
+//             indicatorWeight: 4,
+//           ),
+//         ),
+//         body: Container(
+//           decoration: BoxDecoration(
+//             color: Colors.white
+//             // gradient: LinearGradient(
+//             //   colors: [Colors.deepPurple.shade800, Colors.purple.shade900],
+//             //   begin: Alignment.topCenter,
+//             //   end: Alignment.bottomCenter,
+//             // ),
+//           ),
+//           child: Consumer<MainProvider>(
 //             builder: (context,value,child) {
-//               return Container(
-//                 height: 100,
-//                 decoration: BoxDecoration(
-//                   color: Colors.green,
-//                   borderRadius: BorderRadius.circular(20),
-//                 ),
-//                 child: DropdownButtonFormField<String>(
-//                   decoration: InputDecoration(
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(20),
-//                     ),
-//                     focusedBorder: OutlineInputBorder(
-//                       borderSide: BorderSide.none, // No border when focused
-//                       borderRadius: BorderRadius.circular(20),
-//                     ),
-//                     enabledBorder: OutlineInputBorder(
-//                       borderSide: BorderSide.none, // No border when enabled
-//                       borderRadius: BorderRadius.circular(20),
-//                     ),
-//                     labelText: "Designation",
-//                     labelStyle: TextStyle(
-//                         fontSize: 15,
-//                         color: Colors.white,
-//                         fontFamily: "muktaregular"),
-//                     contentPadding:
-//                     EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-//                   ),
-//                   value: selectDesignation,
-//                   style: TextStyle(
-//                       fontSize: 15,
-//                       color: Colors.white,
-//                       fontFamily: "muktaregular"),
-//                   dropdownColor: Colors.purple, // Dropdown color
-//                   items: designation.map((String designation) {
-//                     return DropdownMenuItem<String>(
-//                       value: designation,
-//                       child: Text(designation),
-//                     );
-//                   }).toList(),
-//                   onChanged: (String? newValue) {
-//                     if (newValue != null) {
-//                       setState(() {
-//                         selectDesignation = newValue;
-//                         value.slotController.text =
-//                             newValue; // Update the controller here
-//                       });
-//                     }
-//                   },
-//                   icon: Padding(
-//                     padding: const EdgeInsets.only(right: 10),
-//                     child: Icon(
-//                       Icons.arrow_drop_down,
-//                       color: Colors.white,
-//                     ),
-//                   ),
-//                 ),
+//               print('Event Bookings: ${value.loadAllEventBookingsList.length}');
+//               print('Destination Bookings: ${value.loadAllDestBookingsList.length}');
+//               return TabBarView(
+//                 children: [
+//
+//                   // Events Tab
+//                   _buildBookingList(),
+//                   // Destinations Tab
+//                   _buildDBookingList(),
+//                 ],
 //               );
 //             }
 //           ),
-//
-//           Consumer<MainProvider>(
-//             builder: (context,val,child) {
-//               return ElevatedButton(onPressed: () {
-//                 val.addSlot();
-//               }, child: Text("Done"));
-//             }
-//           )
-//         ],
+//         ),
 //       ),
 //     );
 //   }
+//
+//   Widget _buildBookingList() {
+//     return Consumer<MainProvider>(
+//       builder: (context,eValue,child) {
+//         return ListView.builder(
+//           padding: const EdgeInsets.all(16),
+//           itemCount: eValue.loadAllEventBookingsList.length,
+//           itemBuilder: (context, index) {
+//             var booking =eValue.loadAllEventBookingsList[index];
+//             return Card(
+//               margin: const EdgeInsets.only(bottom: 16),
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(15),
+//               ),
+//               elevation: 4,
+//               child: InkWell(
+//                 onTap: () {
+//                   // Pop-up window functionality (unchanged)
+//                   showDialog(
+//                     context: context,
+//                     builder: (context) => AlertDialog(
+//                       backgroundColor: Colors.black,
+//                       title: Text(booking.eventName,
+//                         style: const TextStyle(color: Colors.white),
+//                       ),
+//                       content: Column(
+//                         mainAxisSize: MainAxisSize.min,
+//                         children: [
+//                           Image.network(
+//                             booking.eventImage,
+//                             height: 150,
+//                             fit: BoxFit.cover,
+//                           ),
+//                           const SizedBox(height: 10),
+//                           Text(
+//                             "Date: ${booking.eventDate}",
+//                             style: const TextStyle(color: Colors.white),
+//                           ),
+//                           Text(
+//                             "Location: ${booking.eventPlace}, ${booking.eventDistrict}",
+//                             style: const TextStyle(color: Colors.white),
+//                           ),
+//                           Text(
+//                             "Tickets: ${booking.totalMembers}",
+//                             style: const TextStyle(color: Colors.white),
+//                           ),
+//                           Text(
+//                             "Total Price: ₹${booking.totalAmount}",
+//                             style: const TextStyle(color: Colors.white),
+//                           ),
+//                         ],
+//                       ),
+//                       actions: [
+//                         TextButton(
+//                           onPressed: () {
+//                             callNext(context, EventBookedPeoples());
+//                           },
+//                           child: const Text(
+//                             "View",
+//                             style: TextStyle(color: Colors.orange),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   );
+//                 },
+//                 child: Row(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     ClipRRect(
+//                       borderRadius: const BorderRadius.only(
+//                         topLeft: Radius.circular(16),
+//                         bottomLeft: Radius.circular(16),
+//                       ),
+//                       child: Image.network(
+//                         booking.eventImage,
+//                         width: 120,
+//                         height: 120,
+//                         fit: BoxFit.cover,
+//                       ),
+//                     ),
+//                     Expanded(
+//                       child: Padding(
+//                         padding: const EdgeInsets.all(12),
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               booking.eventName,
+//                               style: const TextStyle(
+//                                 fontSize: 18,
+//                                 fontWeight: FontWeight.bold,
+//                                 color: Colors.deepPurple,
+//                               ),
+//                             ),
+//                             const SizedBox(height: 8),
+//                             Text(
+//                               "Date: ${booking.eventDate}",
+//                               style: TextStyle(color: Colors.grey.shade700),
+//                             ),
+//                             Text(
+//                               "Tickets: ${booking.totalMembers}",
+//                               style: TextStyle(color: Colors.grey.shade700),
+//                             ),
+//                             Text(
+//                               "Total Price: ₹${booking.totalAmount}",
+//                               style: const TextStyle(
+//                                 color: Colors.deepPurple,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             );
+//           },
+//         );
+//       }
+//     );
+//   }
+//   Widget _buildDBookingList() {
+//     return Consumer<MainProvider>(
+//       builder: (context,eValue,child) {
+//         return ListView.builder(
+//           padding: const EdgeInsets.all(16),
+//           itemCount: eValue.loadAllDestBookingsList.length,
+//           itemBuilder: (context, index) {
+//             var dbooking =eValue.loadAllDestBookingsList[index];
+//             return Card(
+//               margin: const EdgeInsets.only(bottom: 16),
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(15),
+//               ),
+//               elevation: 4,
+//               child: InkWell(
+//                 onTap: () {
+//                   // Pop-up window functionality (unchanged)
+//                   showDialog(
+//                     context: context,
+//                     builder: (context) => AlertDialog(
+//                       backgroundColor: Colors.black,
+//                       title: Text(dbooking.destName,
+//                         style: const TextStyle(color: Colors.white),
+//                       ),
+//                       content: Column(
+//                         mainAxisSize: MainAxisSize.min,
+//                         children: [
+//                           Image.network(
+//                             dbooking.destImage,
+//                             height: 150,
+//                             fit: BoxFit.cover,
+//                           ),
+//                           const SizedBox(height: 10),
+//                           Text(
+//                             "Date: ${dbooking.travelDate}",
+//                             style: const TextStyle(color: Colors.white),
+//                           ),
+//                           Text(
+//                             "Location: ${dbooking.destPlace}, ${dbooking.destDistrict}",
+//                             style: const TextStyle(color: Colors.white),
+//                           ),
+//                           Text(
+//                             "Tickets: ${dbooking.totalMembers}",
+//                             style: const TextStyle(color: Colors.white),
+//                           ),
+//                           Text(
+//                             "Total Price: ₹${dbooking.totalAmount}",
+//                             style: const TextStyle(color: Colors.white),
+//                           ),
+//                         ],
+//                       ),
+//                       actions: [
+//                         TextButton(
+//                           onPressed: () {
+//                             callNext(context, EventBookedPeoples());
+//                           },
+//                           child: const Text(
+//                             "View",
+//                             style: TextStyle(color: Colors.orange),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   );
+//                 },
+//                 child: Row(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     ClipRRect(
+//                       borderRadius: const BorderRadius.only(
+//                         topLeft: Radius.circular(16),
+//                         bottomLeft: Radius.circular(16),
+//                       ),
+//                       child: Image.network(
+//                         dbooking.destImage,
+//                         width: 120,
+//                         height: 120,
+//                         fit: BoxFit.cover,
+//                       ),
+//                     ),
+//                     Expanded(
+//                       child: Padding(
+//                         padding: const EdgeInsets.all(12),
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               dbooking.destName,
+//                               style: const TextStyle(
+//                                 fontSize: 18,
+//                                 fontWeight: FontWeight.bold,
+//                                 color: Colors.deepPurple,
+//                               ),
+//                             ),
+//                             const SizedBox(height: 8),
+//                             Text(
+//                               "Date: ${dbooking.travelDate}",
+//                               style: TextStyle(color: Colors.grey.shade700),
+//                             ),
+//                             Text(
+//                               "Tickets: ${dbooking.totalMembers}",
+//                               style: TextStyle(color: Colors.grey.shade700),
+//                             ),
+//                             Text(
+//                               "Total Price: ₹${dbooking.totalAmount}",
+//                               style: const TextStyle(
+//                                 color: Colors.deepPurple,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             );
+//           },
+//         );
+//       }
+//     );
+//   }
+//
 // }
-// // TextEditingController slotController = TextEditingController();
-// // void addSlot(){
-// //   String id=DateTime.now().microsecondsSinceEpoch.toString();
-// //   Map<String,dynamic>det=HashMap();
-// //   det["DESIGNATION"] = slotController.text;
-// //   db.collection("Slot").doc(id).set(det);
-// //   notifyListeners();
-// //
-// // }
+///
+// Widget _buildBookingList(List<Map<String, dynamic>> bookings) {
+//   return ListView.builder(
+//     padding: const EdgeInsets.all(16),
+//     itemCount: bookings.length,
+//     itemBuilder: (context, index) {
+//       var booking = bookings[index];
+//       return Card(
+//         margin: const EdgeInsets.only(bottom: 16),
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(15),
+//         ),
+//         elevation: 4,
+//         child: InkWell(
+//           onTap: () {
+//             // Pop-up window functionality (unchanged)
+//             showDialog(
+//               context: context,
+//               builder: (context) => AlertDialog(
+//                 backgroundColor: Colors.black,
+//                 title: Text(
+//                   booking["EVENT_NAME"],
+//                   style: const TextStyle(color: Colors.white),
+//                 ),
+//                 content: Column(
+//                   mainAxisSize: MainAxisSize.min,
+//                   children: [
+//                     Image.network(
+//                       booking["IMAGE"],
+//                       height: 150,
+//                       fit: BoxFit.cover,
+//                     ),
+//                     const SizedBox(height: 10),
+//                     Text(
+//                       "Date: ${booking["DATE"]}",
+//                       style: const TextStyle(color: Colors.white),
+//                     ),
+//                     Text(
+//                       "Location: ${booking["EVENT_PLACE"]}, ${booking["EVENT_DISTRICT"]}",
+//                       style: const TextStyle(color: Colors.white),
+//                     ),
+//                     Text(
+//                       "Tickets: ${booking["TOTAL_TICKET"]}",
+//                       style: const TextStyle(color: Colors.white),
+//                     ),
+//                     Text(
+//                       "Total Price: ₹${booking["TOTAL_PRICE"]}",
+//                       style: const TextStyle(color: Colors.white),
+//                     ),
+//                   ],
+//                 ),
+//                 actions: [
+//                   TextButton(
+//                     onPressed: () {
+//                       callNext(context, EventBookedPeoples());
+//                     },
+//                     child: const Text(
+//                       "View",
+//                       style: TextStyle(color: Colors.orange),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             );
+//           },
+//           child: Row(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               ClipRRect(
+//                 borderRadius: const BorderRadius.only(
+//                   topLeft: Radius.circular(16),
+//                   bottomLeft: Radius.circular(16),
+//                 ),
+//                 child: Image.network(
+//                   booking["IMAGE"],
+//                   width: 120,
+//                   height: 120,
+//                   fit: BoxFit.cover,
+//                 ),
+//               ),
+//               Expanded(
+//                 child: Padding(
+//                   padding: const EdgeInsets.all(12),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         booking["EVENT_NAME"],
+//                         style: const TextStyle(
+//                           fontSize: 18,
+//                           fontWeight: FontWeight.bold,
+//                           color: Colors.deepPurple,
+//                         ),
+//                       ),
+//                       const SizedBox(height: 8),
+//                       Text(
+//                         "Date: ${booking["DATE"]}",
+//                         style: TextStyle(color: Colors.grey.shade700),
+//                       ),
+//                       Text(
+//                         "Tickets: ${booking["TOTAL_TICKET"]}",
+//                         style: TextStyle(color: Colors.grey.shade700),
+//                       ),
+//                       Text(
+//                         "Total Price: ₹${booking["TOTAL_PRICE"]}",
+//                         style: const TextStyle(
+//                           color: Colors.deepPurple,
+//                           fontWeight: FontWeight.bold,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }

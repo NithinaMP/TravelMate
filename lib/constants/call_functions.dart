@@ -16,6 +16,9 @@ callNextReplacement(var context,var className, ) {
 back(var context, DestinationScreen destinationScreen) {
   Navigator.pop(context);
 }
+backto(var context) {
+  Navigator.pop(context);
+}
 
 void finish(context) {
   Navigator.pop(context);

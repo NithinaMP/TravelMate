@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/provider/mainProvider.dart';
 import 'package:travelmate/user/profileEditScreen.dart';
 
@@ -24,7 +25,11 @@ class WishlistScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text("Wishlist",
             style: TextStyle(fontFamily: "bakbak",fontSize: 28,color: Colors.white),),
-          leading: Icon(Icons.arrow_back_ios_new_rounded,color: Colors.white,size: 40,),
+          leading: InkWell(
+            onTap: () {
+              backto(context);
+            },
+              child: Icon(Icons.arrow_back_ios_new_rounded,color: Colors.white,size: 20,)),
           backgroundColor: Colors.black,
         ),
         body: SingleChildScrollView(

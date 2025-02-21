@@ -119,29 +119,35 @@ class ProfileEditScreen extends StatelessWidget {
                   ),
 
                   SizedBox(height:height/5,),
+
                   Consumer<LoginProvider>(
-                    builder: (context,eValue,child) {
+                    builder: (context, eValue, child) {
                       return InkWell(
                         onTap: () {
                           eValue.addRegistraion(context, "EDIT", userId);
-                          finish(context);
+                          // eValue.getUser();
                         },
-                        splashColor: Colors.transparent, // Remove splash color
-                        highlightColor: Colors.transparent, // Remove highlight color
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         child: Container(
                           height: 55,
-                          width: width/2.5,
-                          decoration: BoxDecoration(gradient: admingradient,
-                          borderRadius: BorderRadius.circular(20)),
-                          child: Center(child: Text("Save",
-                            style: TextStyle(color: Colors.white,fontFamily: "belleza",fontSize: 20),
+                          width: width / 2.5,
+                          decoration: BoxDecoration(
+                            gradient: admingradient,
+                            borderRadius: BorderRadius.circular(20),
                           ),
+                          child: Center(
+                            child: eValue.isSaving
+                                ? CircularProgressIndicator(color: Colors.white) // Show loader
+                                : Text(
+                              "Save",
+                              style: TextStyle(color: Colors.white, fontFamily: "belleza", fontSize: 20),
+                            ),
                           ),
                         ),
                       );
-                    }
+                    },
                   ),
-
 
 
                 ],
@@ -188,3 +194,27 @@ void showBottomSheet(BuildContext context) {
       });
   // ImageSource
 }
+
+
+// Consumer<LoginProvider>(
+//   builder: (context,eValue,child) {
+//     return InkWell(
+//       onTap: () {
+//         eValue.addRegistraion(context, "EDIT", userId);
+//         finish(context);
+//       },
+//       splashColor: Colors.transparent, // Remove splash color
+//       highlightColor: Colors.transparent, // Remove highlight color
+//       child: Container(
+//         height: 55,
+//         width: width/2.5,
+//         decoration: BoxDecoration(gradient: admingradient,
+//         borderRadius: BorderRadius.circular(20)),
+//         child: Center(child: Text("Save",
+//           style: TextStyle(color: Colors.white,fontFamily: "belleza",fontSize: 20),
+//         ),
+//         ),
+//       ),
+//     );
+//   }
+// ),

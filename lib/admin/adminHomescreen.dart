@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:travelmate/admin/addDestinationDetails.dart';
 import 'package:travelmate/admin/addEventDetailsScreen.dart';
+import 'package:travelmate/admin/sample1.dart';
 import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/provider/loginProvider.dart';
 import 'package:travelmate/provider/mainProvider.dart';
@@ -118,28 +119,33 @@ class adminhomeWidget extends StatelessWidget {
           }
         ),
 
-         Padding(
-           padding: const EdgeInsets.all(5.0),
-           child: Container(
-             height: 95,
-             width: width,
-             decoration: BoxDecoration(gradient: admingradient,
-               borderRadius: BorderRadius.circular(5)
-             ),
-             child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-               children: [
-                 ListTile(
-                   leading: Icon(Icons.perm_contact_calendar_outlined,size: 32,color: Colors.white,),
-                   title: Text("Bookings",style: TextStyle(fontFamily: "benne",fontSize: 18,color: Colors.white),),
-                   subtitle: Text("Edit location details,price and more",style: TextStyle(fontFamily: "baloo",fontSize: 13,color: Colors.white),),
-                   trailing: Icon(Icons.arrow_forward_ios_sharp,size: 20,color: Colors.white,),
-                             onTap: () {
-                               // callNext(context, MyTicketScreen());
-                             },
+         Consumer<MainProvider>(
+           builder: (context,bValue,child) {
+             return Padding(
+               padding: const EdgeInsets.all(5.0),
+               child: Container(
+                 height: 95,
+                 width: width,
+                 decoration: BoxDecoration(gradient: admingradient,
+                   borderRadius: BorderRadius.circular(5)
                  ),
-               ],
-             ),
-           ),
+                 child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                   children: [
+                     ListTile(
+                       leading: Icon(Icons.perm_contact_calendar_outlined,size: 32,color: Colors.white,),
+                       title: Text("Bookings",style: TextStyle(fontFamily: "benne",fontSize: 18,color: Colors.white),),
+                       subtitle: Text("Edit location details,price and more",style: TextStyle(fontFamily: "baloo",fontSize: 13,color: Colors.white),),
+                       trailing: Icon(Icons.arrow_forward_ios_sharp,size: 20,color: Colors.white,),
+                                 onTap: () async {
+                                   await bValue.loadAllBookings();
+                                   callNext(context, BookingListScreen());
+                                 },
+                     ),
+                   ],
+                 ),
+               ),
+             );
+           }
          ),
 
           Padding(

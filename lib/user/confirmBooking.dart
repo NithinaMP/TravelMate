@@ -143,6 +143,7 @@ class ConfirmBooking extends StatelessWidget {
             eventDate:eventDate??"Default Event Date" ///paass the eventDate
           )
           );
+          print("confirmation of event date *****:$eventDate");
 
         }
 

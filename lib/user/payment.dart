@@ -87,7 +87,7 @@ class PaymentScreen extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
-
+              print("Google pay.....");
               showPaymentConfirmation(
                   context,
                   userId,
@@ -109,6 +109,7 @@ class PaymentScreen extends StatelessWidget {
             child: Container(
               height: height / 10,
               width: width,
+
               decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.symmetric(
@@ -116,6 +117,7 @@ class PaymentScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
+
                   Image.asset(
                     "assets/image/gpay.png",
                     scale: 14,
@@ -126,6 +128,7 @@ class PaymentScreen extends StatelessWidget {
                   ),
                   Icon(Icons.arrow_drop_down_outlined)
                 ],
+
               ),
             ),
           ),
@@ -178,28 +181,71 @@ class PaymentScreen extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          Container(
-            height: height / 10,
-            width: width,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.symmetric(
-                    horizontal: BorderSide(color: Colors.grey.shade300))),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Image.asset(
-                  "assets/image/bpi.png",
-                  scale: 4,
-                ),
-                Text(
-                  "Bhim",
-                  style: TextStyle(fontSize: 16),
-                ),
-                Icon(Icons.arrow_drop_down_outlined)
-              ],
+          InkWell(
+            onTap: () {
+              String eventDate="2024-12-20";
+              showPaymentConfirmation(
+                  context,
+                  userId,
+                  destId,
+                  destName,
+                  destDistrict,
+                  destPlace,
+                  destImage,
+                  destEntryFee,
+                  selectedCount,
+                  totalAmount,
+                  subTotal,
+                  from,
+                  eventDate: eventDate
+                // "Event"
+              );
+            },
+            child: Container(
+              height: height / 10,
+              width: width,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.symmetric(
+                      horizontal: BorderSide(color: Colors.grey.shade300))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Image.asset(
+                    "assets/image/bpi.png",
+                    scale: 10,
+                  ),
+                  Text(
+                    "Bhim",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Icon(Icons.arrow_drop_down_outlined)
+                ],
+              ),
             ),
           ),
+          // Container(
+          //   height: height / 10,
+          //   width: width,
+          //   decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       border: Border.symmetric(
+          //           horizontal: BorderSide(color: Colors.grey.shade300))),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //     children: [
+          //       Image.asset(
+          //         "assets/image/bpi.png",
+          //         scale: 4,
+          //       ),
+          //       Text(
+          //         "Bhim",
+          //         style: TextStyle(fontSize: 16),
+          //       ),
+          //       Icon(Icons.arrow_drop_down_outlined)
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
