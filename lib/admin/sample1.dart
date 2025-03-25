@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:travelmate/admin/eventBookedPeoples.dart';
+// import 'package:travelmate/admin/eventBookedPeoples.dart';
 import 'package:travelmate/constants/call_functions.dart';
 import 'package:travelmate/constants/constant_colors.dart';
 
@@ -394,7 +394,7 @@ class BookingListScreen extends StatelessWidget {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          callNext(context, EventBookedPeoples());
+                          // callNext(context, EventBookedPeoples());
                         },
                         child: const Text("View",
                             style: TextStyle(color: Colors.orange)),
@@ -444,7 +444,7 @@ class BookingListScreen extends StatelessWidget {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          callNext(context, EventBookedPeoples());
+                          // callNext(context, EventBookedPeoples());
                         },
                         child: const Text("View",
                             style: TextStyle(color: Colors.orange)),

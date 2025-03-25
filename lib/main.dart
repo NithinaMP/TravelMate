@@ -22,7 +22,7 @@ import 'package:travelmate/user/userBottomScreen.dart';
 import 'package:travelmate/user/wishListScreen.dart';
 
 import 'admin/adminHomescreen.dart';
-import 'admin/eventBookedPeoples.dart';
+// import 'admin/eventBookedPeoples.dart';
 import 'admin/sample1.dart';
 
 Future <void> main() async{
