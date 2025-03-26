@@ -265,7 +265,8 @@ class _DestinationScreenState extends State<DestinationScreen> with SingleTicker
                         height: height / 3,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage("https://i.pinimg.com/1200x/64/fb/3f/64fb3f6f20e98a7bc2d63e792cff83d1.jpg"),
+                            image: NetworkImage(widget.item.destImage),
+                            // image: NetworkImage("https://i.pinimg.com/1200x/64/fb/3f/64fb3f6f20e98a7bc2d63e792cff83d1.jpg"),
                             fit: BoxFit.cover,
                             onError: (exception, stackTrace) {
                               // Optional: Add error handling logic
@@ -281,7 +282,7 @@ class _DestinationScreenState extends State<DestinationScreen> with SingleTicker
                           ),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState != ConnectionState.done) {
-                              return Center(child: CircularProgressIndicator());
+                              // return Center(child: CircularProgressIndicator());
                             }
                             return Container(); // Empty container once image is loaded
                           },
